@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+
+class WaitersWalletApp extends StatelessWidget {
+  const WaitersWalletApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Waiters Wallet',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
