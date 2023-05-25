@@ -4,14 +4,14 @@ import 'package:waiters_wallet/src/features/onboarding/widgets/onboarding_pagevi
 
 import '../widgets/widgets.dart';
 
-class MainOnboardingScreen extends StatefulWidget {
-  const MainOnboardingScreen({Key? key}) : super(key: key);
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainOnboardingScreen> createState() => _MainOnboardingScreenState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _MainOnboardingScreenState extends State<MainOnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
 
   //this local variable will be changed
