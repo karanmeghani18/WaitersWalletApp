@@ -1,17 +1,20 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:waiters_wallet/src/features/onboarding/models/OnboardingItemModel.dart';
 import 'package:waiters_wallet/src/features/onboarding/widgets/onboarding_pageview_item.dart';
 
+import '../../../routing/routing.dart';
 import '../widgets/widgets.dart';
 
-class MainOnboardingScreen extends StatefulWidget {
-  const MainOnboardingScreen({Key? key}) : super(key: key);
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainOnboardingScreen> createState() => _MainOnboardingScreenState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _MainOnboardingScreenState extends State<MainOnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
 
   //this local variable will be changed
@@ -69,20 +72,36 @@ class _MainOnboardingScreenState extends State<MainOnboardingScreen> {
               itemCount: 6,
             ),
           ),
-          const SignUpButton(
+          SignUpButton(
             logoSvg: "assets/icons/google.svg",
             methodName: "Google",
+            onPress: () {
+              Fluttertoast.showToast(
+                  msg: "Google Signup not implemented",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            },
           ),
           const SizedBox(height: 18),
-          const SignUpButton(
+          SignUpButton(
             logoSvg: "assets/icons/mail.svg",
             methodName: "Email",
+            onPress: () {
+              Navigator.pushNamed(
+                context,
+                Routing.signupScreen,
+              );
+            },
           ),
           const Spacer(),
           RichText(
-            text: const TextSpan(
+            text: TextSpan(
               children: [
-                TextSpan(
+                const TextSpan(
                   text: "Already have an account? ",
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -91,8 +110,15 @@ class _MainOnboardingScreenState extends State<MainOnboardingScreen> {
                   ),
                 ),
                 TextSpan(
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.pushNamed(
+                        context,
+                        Routing.loginScreen,
+                      );
+                    },
                   text: "Login",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                     color: Color(0xff07F8DB),
