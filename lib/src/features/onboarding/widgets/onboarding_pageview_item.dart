@@ -14,10 +14,13 @@ class OnboardingPageViewItem extends StatelessWidget {
       child: Column(
         children: [
           SafeArea(
-            child: Image.asset(
-              onboardingItem.iconLocation,
-              height: onboardingItem.isAppLogo ? 220 : 120,
-              width: onboardingItem.isAppLogo ? 220 : 120,
+            child: Hero(
+              tag: onboardingItem.isAppLogo ? 'logo' : '',
+              child: Image.asset(
+                onboardingItem.iconLocation,
+                height: onboardingItem.isAppLogo ? 220 : 120,
+                width: onboardingItem.isAppLogo ? 220 : 120,
+              ),
             ),
           ),
           Text(
