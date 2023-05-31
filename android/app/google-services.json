@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "129179530930",
+    "project_id": "waiters-wallet",
+    "storage_bucket": "waiters-wallet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129179530930:android:7eea57ea0c72ec17b03bab",
+        "android_client_info": {
+          "package_name": "com.example.waiters_wallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0uwJpTZFZlRasNPSuK7mbAnXhHHkEqjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
