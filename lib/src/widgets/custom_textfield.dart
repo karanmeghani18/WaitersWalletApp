@@ -5,10 +5,12 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     this.isPassword = false,
+    required this.controller
   });
 
   final String hintText;
   final bool isPassword;
+  final controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
           child: TextField(
             obscureText: isPassword,
             cursorHeight: 18,
+            controller: controller,
             cursorColor: Colors.black,
             style: const TextStyle(
               fontSize: 14,

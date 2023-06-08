@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
@@ -13,6 +14,15 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool rememberMe = false;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void signUserIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ).then((value) => print(value.user));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +45,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const CustomTextField(hintText: "Email"),
-            const CustomTextField(
+            CustomTextField(
+              hintText: "Email",
+              controller: emailController,
+            ),
+            CustomTextField(
               hintText: "Password",
               isPassword: true,
+              controller: passwordController,
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -76,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 22),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(
                         context,
                         Routing.resetPasswordScreen,
@@ -95,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const Spacer(),
-            const CustomAuthButton(text: "LOGIN"),
+            CustomAuthButton(text: "LOGIN", onPress: signUserIn),
             const SizedBox(height: 20),
             RichText(
               text: TextSpan(
