@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
@@ -13,6 +14,17 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool rememberMe = false;
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void signUserUp() async {
+    print('Hello');
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +47,21 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
             ),
-            const CustomTextField(hintText: "Full Name"),
-            const CustomTextField(hintText: "Email"),
-            const CustomTextField(
+            CustomTextField(
+              hintText: "Full Name",
+              controller: nameController,
+            ),
+            CustomTextField(
+              hintText: "Email",
+              controller: emailController,
+            ),
+            CustomTextField(
               hintText: "Password",
               isPassword: true,
+              controller: passwordController,
             ),
             const Spacer(),
-            const CustomAuthButton(text: "SIGNUP"),
+            CustomAuthButton(text: "SIGNUP", onPress: signUserUp),
             const SizedBox(height: 20),
             RichText(
               text: TextSpan(
