@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiters_wallet/src/constants/color_constants.dart';
 
 class CustomAuthButton extends StatelessWidget {
   const CustomAuthButton({
@@ -19,7 +20,7 @@ class CustomAuthButton extends StatelessWidget {
       child: Container(
         height: 48,
         margin: const EdgeInsets.symmetric(horizontal: 20),
-        color: const Color(0xffDAA98A),
+        color: skinColorConst,
         child: Center(
           child: Text(
             text,

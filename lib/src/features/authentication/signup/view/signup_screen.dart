@@ -19,11 +19,14 @@ class _SignupScreenState extends State<SignupScreen> {
   final passwordController = TextEditingController();
 
   void signUserUp() async {
-    print('Hello');
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
-    );
+    ).then((value) {
+      if(value.user != null){
+        Navigator.pushReplacementNamed(context, Routing.homeScreen);
+      }
+    });
   }
 
   @override

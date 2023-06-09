@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
@@ -21,7 +22,11 @@ class _LoginScreenState extends State<LoginScreen> {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
-    ).then((value) => print(value.user));
+    ).then((value) {
+      if(value.user != null){
+        Navigator.pushReplacementNamed(context, Routing.homeScreen);
+      }
+    });
   }
 
   @override
@@ -73,9 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           fillColor: MaterialStateProperty.resolveWith<Color>(
                               (Set<MaterialState> states) {
                             if (states.contains(MaterialState.disabled)) {
-                              return const Color(0xffDAA98A).withOpacity(.32);
+                              return skinColorConst.withOpacity(.32);
                             }
-                            return const Color(0xffDAA98A);
+                            return skinColorConst;
                           }),
                           onChanged: (value) {
                             setState(() {
@@ -96,10 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         Routing.resetPasswordScreen,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Forgot Password?",
                       style: TextStyle(
-                        color: Color(0xffDAA98A),
+                        color: skinColorConst,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
