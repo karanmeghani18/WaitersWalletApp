@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
@@ -13,6 +15,19 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool rememberMe = false;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void signUserIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ).then((value) {
+      if(value.user != null){
+        Navigator.pushReplacementNamed(context, Routing.homeScreen);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const CustomTextField(hintText: "Email"),
-            const CustomTextField(
+            CustomTextField(
+              hintText: "Email",
+              controller: emailController,
+            ),
+            CustomTextField(
               hintText: "Password",
               isPassword: true,
+              controller: passwordController,
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -59,9 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           fillColor: MaterialStateProperty.resolveWith<Color>(
                               (Set<MaterialState> states) {
                             if (states.contains(MaterialState.disabled)) {
-                              return const Color(0xffDAA98A).withOpacity(.32);
+                              return skinColorConst.withOpacity(.32);
                             }
-                            return const Color(0xffDAA98A);
+                            return skinColorConst;
                           }),
                           onChanged: (value) {
                             setState(() {
@@ -76,16 +95,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 22),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(
                         context,
                         Routing.resetPasswordScreen,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Forgot Password?",
                       style: TextStyle(
-                        color: Color(0xffDAA98A),
+                        color: skinColorConst,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -95,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const Spacer(),
-            const CustomAuthButton(text: "LOGIN"),
+            CustomAuthButton(text: "LOGIN", onPress: signUserIn),
             const SizedBox(height: 20),
             RichText(
               text: TextSpan(
