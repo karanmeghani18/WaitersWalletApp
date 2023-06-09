@@ -44,7 +44,7 @@ class Routing {
         );
       case resetPasswordScreen:
         return MaterialPageRoute(
-          builder: (context) => const ResetPasswordScreen(),
+          builder: (context) =>  ResetPasswordScreen(),
           settings: const RouteSettings(
             name: resetPasswordScreen,
           ),
