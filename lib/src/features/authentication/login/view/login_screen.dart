@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (e.code == 'wrong-password') {
               errorMessage = 'Wrong password provided for that user.';
             }
-            return CustomErrorDialog(errorMessage: errorMessage);
+            return CustomErrorDialog(errorMessage: errorMessage, errorTitle: "Login Error",);
           });
     }
   }

@@ -31,7 +31,7 @@ String? validateFullName(String text){
   if(formattedText == ""){
     return "Please enter your full name";
   }
-  if(formattedText.length<=3){
+  if(formattedText.length<3){
     return "Please enter at least 3 characters";
   }
   return null;

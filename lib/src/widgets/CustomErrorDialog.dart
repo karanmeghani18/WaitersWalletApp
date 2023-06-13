@@ -5,14 +5,16 @@ class CustomErrorDialog extends StatelessWidget {
   const CustomErrorDialog({
     super.key,
     required this.errorMessage,
+    required this.errorTitle,
   });
 
   final String errorMessage;
+  final String errorTitle;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: const Text("Login Error"),
+      title: Text(errorTitle),
       content: Text(errorMessage),
       actions: [
         CupertinoDialogAction(
