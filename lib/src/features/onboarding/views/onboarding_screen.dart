@@ -77,13 +77,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             methodName: "Google",
             onPress: () {
               Fluttertoast.showToast(
-                  msg: "Google Signup not implemented",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+                msg: "Google Signup not implemented",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
             },
           ),
           const SizedBox(height: 18),

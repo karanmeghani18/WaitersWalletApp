@@ -41,6 +41,7 @@ dependencies:
   firebase_core: ^2.13.0
   firebase_auth: ^4.6.1
   calendar_view: ^1.0.3
+  modal_bottom_sheet: ^3.0.0-pre
 
 dev_dependencies:
   flutter_test:
