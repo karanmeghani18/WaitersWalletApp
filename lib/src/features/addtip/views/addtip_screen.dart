@@ -14,27 +14,30 @@ class AddTipSheet extends StatelessWidget {
         padding: const EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            Text(
+            const Text(
               "Add Tip",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 28,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             CustomTextField(
               hintText: "Tip Amount",
               controller: TextEditingController(),
+              errorText: "",
             ),
             CustomTextField(
               hintText: "Hours Worked",
               controller: TextEditingController(),
+              errorText: "",
             ),
             CustomTextField(
               hintText: "Notes",
               controller: TextEditingController(),
+              errorText: "",
             ),
-            Spacer(),
+            const Spacer(),
             CustomAuthButton(text: "ADD", onPress: () {
               Navigator.of(context).pop();
               Fluttertoast.showToast(
@@ -47,7 +50,7 @@ class AddTipSheet extends StatelessWidget {
                 fontSize: 16.0,
               );
             }),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
           ],
         ),
       ),

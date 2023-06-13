@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -17,14 +18,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(
       const Duration(seconds: 1),
-          () {
-        Navigator.pushReplacementNamed(
-          context,
-          Routing.onBoardingScreen,
-        );
-            if (kDebugMode) {
-              print("Onto next screen");
-            }
+      () {
+
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if(currentUser!=null){
+          Navigator.pushReplacementNamed(
+            context,
+            Routing.homeScreen,
+          );
+        }else{
+          Navigator.pushReplacementNamed(
+            context,
+            Routing.onBoardingScreen,
+          );
+        }
+
+
       },
     );
   }

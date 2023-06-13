@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -31,10 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'Index 3: Schedule',
       style: optionStyle,
     ),
-    Text(
-      'Index 4: Account',
-      style: optionStyle,
-    ),
+    AccountsScreen(),
   ];
 
   void _onItemTapped(int index) {

@@ -43,6 +43,7 @@ class ResetPasswordScreen extends StatelessWidget {
             CustomTextField(
               hintText: "Email",
               controller: emailController,
+              errorText: "",
             ),
             const SizedBox(height: 40),
             const Spacer(),

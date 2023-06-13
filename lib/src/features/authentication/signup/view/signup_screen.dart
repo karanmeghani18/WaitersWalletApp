@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:waiters_wallet/src/validators/validators.dart';
+import 'package:waiters_wallet/src/widgets/CustomErrorDialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
+import '../../../home/views/home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -17,16 +21,56 @@ class _SignupScreenState extends State<SignupScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  String emailErrorText = "";
+  String passwordErrorText = "";
+  String nameErrorText = "";
 
   void signUserUp() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    ).then((value) {
-      if(value.user != null){
-        Navigator.pushReplacementNamed(context, Routing.homeScreen);
-      }
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      )
+          .then((value) {
+        if (value.user != null) {
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) {
+            return const HomeScreen();
+          }), (route) => false);
+        }
+      });
+    } on FirebaseAuthException catch (e) {
+      showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            String errorMessage = "";
+            if (e.code == 'weak-password') {
+              errorMessage = 'The password provided is too weak.';
+            } else if (e.code == 'email-already-in-use') {
+              errorMessage = 'The account already exists for that email.';
+            }
+            return CustomErrorDialog(
+              errorMessage: errorMessage,
+              errorTitle: "Signup Error",
+            );
+          });
+    }
+  }
+
+  void validateCredentials() {
+    final String emailText = emailController.text;
+    final String passwordText = passwordController.text;
+    final String nameText = nameController.text;
+    setState(() {
+      emailErrorText = validateEmail(emailText) ?? "";
+      passwordErrorText = validatePassword(passwordText) ?? "";
+      nameErrorText = validateFullName(nameText) ?? "";
     });
+    if (validateEmail(emailText) == null &&
+        validatePassword(passwordText) == null) {
+      signUserUp();
+    }
   }
 
   @override
@@ -53,18 +97,21 @@ class _SignupScreenState extends State<SignupScreen> {
             CustomTextField(
               hintText: "Full Name",
               controller: nameController,
+              errorText: nameErrorText,
             ),
             CustomTextField(
               hintText: "Email",
               controller: emailController,
+              errorText: emailErrorText,
             ),
             CustomTextField(
               hintText: "Password",
               isPassword: true,
               controller: passwordController,
+              errorText: passwordErrorText,
             ),
             const Spacer(),
-            CustomAuthButton(text: "SIGNUP", onPress: signUserUp),
+            CustomAuthButton(text: "SIGNUP", onPress: validateCredentials),
             const SizedBox(height: 20),
             RichText(
               text: TextSpan(
