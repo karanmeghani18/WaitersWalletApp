@@ -53,15 +53,18 @@ class _SignupScreenState extends State<SignupScreen> {
             CustomTextField(
               hintText: "Full Name",
               controller: nameController,
+              errorText: "",
             ),
             CustomTextField(
               hintText: "Email",
               controller: emailController,
+              errorText: "",
             ),
             CustomTextField(
               hintText: "Password",
               isPassword: true,
               controller: passwordController,
+              errorText: "",
             ),
             const Spacer(),
             CustomAuthButton(text: "SIGNUP", onPress: signUserUp),

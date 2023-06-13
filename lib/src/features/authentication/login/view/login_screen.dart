@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
+import 'package:waiters_wallet/src/validators/validators.dart';
+import 'package:waiters_wallet/src/widgets/CustomErrorDialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
@@ -15,18 +19,52 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool rememberMe = false;
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final emailController = TextEditingController(text: "test1@gmail.com");
+  final passwordController = TextEditingController(text: "12345678");
+  String emailErrorText = "";
+  String passwordErrorText = "";
 
   void signUserIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    ).then((value) {
-      if(value.user != null){
-        Navigator.pushReplacementNamed(context, Routing.homeScreen);
-      }
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      )
+          .then((value) {
+        if (value.user != null) {
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) {
+            return const HomeScreen();
+          }), (route) => false);
+        }
+      });
+    } on FirebaseAuthException catch (e) {
+      showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            String errorMessage = "";
+            if (e.code == 'user-not-found') {
+              errorMessage = 'No user found for that email.';
+            } else if (e.code == 'wrong-password') {
+              errorMessage = 'Wrong password provided for that user.';
+            }
+            return CustomErrorDialog(errorMessage: errorMessage);
+          });
+    }
+  }
+
+  void validateCredentials() {
+    final String emailText = emailController.text;
+    final String passwordText = passwordController.text;
+    setState(() {
+      emailErrorText = validateEmail(emailText) ?? "";
+      passwordErrorText = validatePassword(passwordText) ?? "";
     });
+    if (validateEmail(emailText) == null &&
+        validatePassword(passwordText) == null) {
+      signUserIn();
+    }
   }
 
   @override
@@ -53,11 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
             CustomTextField(
               hintText: "Email",
               controller: emailController,
+              errorText: emailErrorText,
             ),
             CustomTextField(
               hintText: "Password",
               isPassword: true,
               controller: passwordController,
+              errorText: passwordErrorText,
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -114,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const Spacer(),
-            CustomAuthButton(text: "LOGIN", onPress: signUserIn),
+            CustomAuthButton(text: "LOGIN", onPress: validateCredentials),
             const SizedBox(height: 20),
             RichText(
               text: TextSpan(

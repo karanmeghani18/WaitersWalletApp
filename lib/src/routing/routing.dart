@@ -6,14 +6,14 @@ import 'package:waiters_wallet/src/features/onboarding/views/onboarding_screen.d
 import '../features/splash/splash.dart' show SplashScreen;
 
 class Routing {
-  // static const String splashScreen = '/';
-  static const String splashScreen = '/splash';
+  static const String splashScreen = '/';
+  // static const String splashScreen = '/splash';
   static const String loginScreen = '/login';
   static const String signupScreen = '/signup';
   static const String resetPasswordScreen = '/resetPassword';
   static const String onBoardingScreen = '/onBoarding';
-  // static const String homeScreen = '/home';
-  static const String homeScreen = '/';
+  static const String homeScreen = '/home';
+  // static const String homeScreen = '/';
 
   static Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

@@ -14,7 +14,7 @@ class WaitersWalletApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
-          fontFamily: 'Lato'
+          fontFamily: 'Lato',
         ),
         debugShowCheckedModeBanner: false,
         onGenerateRoute: Routing.onGenerateRoute,
