@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
+import 'package:waiters_wallet/src/features/earnings/views/earnings_screen.dart';
 
 import '../../calendar/controller/calendar_event_controller.dart';
 
@@ -25,10 +26,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     CalendarScreen(),
-    Text(
-      'Index 1: Earnings',
-      style: optionStyle,
-    ),
+    EarningsScreen(),
     Text(
       'Index 2: Goals',
       style: optionStyle,
@@ -49,7 +47,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(calendarEventControllerProvider, (previous, next) {
-      print('_HomeScreenState.build -> next: ${next.status}');
 
       if (next.status == CalendarEventStatus.addEvent) {
         final event = next.events.last;
@@ -69,9 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
