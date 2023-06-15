@@ -1,16 +1,21 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+import '../../calendar/controller/calendar_event_controller.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
 
   static const TextStyle optionStyle = TextStyle(
@@ -43,6 +48,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(calendarEventControllerProvider, (previous, next) {
+      print('_HomeScreenState.build -> next: ${next.status}');
+
+      if (next.status == CalendarEventStatus.addEvent) {
+        final event = next.events.last;
+
+        CalendarControllerProvider.of(context).controller.add(event);
+
+        Fluttertoast.showToast(
+          msg: "Tip Added",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: skinColorConst,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+      }
+    });
+
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

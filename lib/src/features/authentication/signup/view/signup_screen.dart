@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/validators/validators.dart';
-import 'package:waiters_wallet/src/widgets/CustomErrorDialog.dart';
+import 'package:waiters_wallet/src/widgets/custom_error_dialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
