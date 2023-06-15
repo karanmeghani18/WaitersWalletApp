@@ -2,24 +2,21 @@ import 'dart:async';
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:waiters_wallet/src/constants/app_colors.dart';
 import 'package:waiters_wallet/src/constants/constants.dart';
 import 'package:waiters_wallet/src/utils/color_extensions.dart';
 
 class EarningsChart extends StatefulWidget {
   EarningsChart({super.key});
 
-  List<Color> get availableColors => const <Color>[
-        AppColors.contentColorPurple,
-        AppColors.contentColorYellow,
-        AppColors.contentColorBlue,
-        AppColors.contentColorOrange,
-        AppColors.contentColorPink,
-        AppColors.contentColorRed,
+  List<Color> get availableColors => <Color>[
+        skinColorConst.darken(40),
+        skinColorConst.darken(50),
+        skinColorConst.darken(30),
+        skinColorConst.darken(60),
+        skinColorConst.darken(20),
+        skinColorConst.darken(60),
       ];
 
-  // final Color barBackgroundColor =
-  //     AppColors.contentColorWhite.darken().withOpacity(0.3);
   final Color barBackgroundColor = Colors.transparent;
   final Color barColor = skinColorConst;
   final Color touchedBarColor = skyBlueColorConst;

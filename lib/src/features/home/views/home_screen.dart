@@ -6,6 +6,7 @@ import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
 import 'package:waiters_wallet/src/features/earnings/views/earnings_screen.dart';
+import 'package:waiters_wallet/src/features/goals/views/goals_screen.dart';
 
 import '../../calendar/controller/calendar_event_controller.dart';
 
@@ -27,13 +28,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
     CalendarScreen(),
     EarningsScreen(),
-    Text(
-      'Index 2: Goals',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Schedule',
-      style: optionStyle,
+    GoalsScreen(),
+    Center(
+      child: Text(
+        'Index 3: Schedule',
+        style: optionStyle,
+      ),
     ),
     AccountsScreen(),
   ];
@@ -47,7 +47,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(calendarEventControllerProvider, (previous, next) {
-
       if (next.status == CalendarEventStatus.addEvent) {
         final event = next.events.last;
 
