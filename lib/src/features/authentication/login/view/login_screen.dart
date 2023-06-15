@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
 import 'package:waiters_wallet/src/validators/validators.dart';
-import 'package:waiters_wallet/src/widgets/CustomErrorDialog.dart';
+import 'package:waiters_wallet/src/widgets/custom_error_dialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';

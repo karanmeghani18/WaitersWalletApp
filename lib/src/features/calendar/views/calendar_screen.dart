@@ -1,18 +1,19 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
+import 'package:waiters_wallet/src/features/calendar/widgets/widgets.dart';
 
-import '../../addtip/views/addtip_screen.dart';
+import 'package:waiters_wallet/src/constants/constants.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({Key? key}) : super(key: key);
 
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
+  ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   bool isCustomDay = false;
   DateTime selectedDate = DateTime.now();
 
@@ -36,7 +37,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           Expanded(
             child: MonthView(
-              controller: EventController(),
+              controller: ref
+                  .read(calendarEventControllerProvider.notifier)
+                  .eventController,
               onCellTap: (events, date) {
                 setState(() {
                   isCustomDay = true;
@@ -45,51 +48,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
               },
               cellAspectRatio: 1.1,
               cellBuilder: (date, event, isToday, isInMonth) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: decideCellColor(date, isToday, isInMonth),
-                    // borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      date.day.toString(),
-                      style: TextStyle(
-                        color:
-                            !isInMonth ? Colors.grey.withOpacity(0.7) : Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                final bool hasEvent = event.isNotEmpty;
+                return CustomDateCell(
+                  hasEvent: hasEvent,
+                  cellColor: decideCellColor(date, isToday, isInMonth),
+                  isInMonth: isInMonth,
+                  date: date,
+                  eventTitle: hasEvent ? event.first.title : "",
                 );
               },
-              headerStyle: const HeaderStyle(
-                leftIcon: Icon(Icons.arrow_circle_left_outlined),
-                rightIcon: Icon(Icons.arrow_circle_right_outlined),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-              ),
+              headerStyle: calendarHeaderStyle,
             ),
           ),
-
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showBarModalBottomSheet(
-            context: context,
-            builder: (context) => const AddTipSheet(),
-           
-          );
-        },
-        backgroundColor: skinColorConst,
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'Add',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
+      floatingActionButton: AddTipButton(selectedDate: selectedDate),
     );
   }
 }
-

@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:waiters_wallet/src/constants/color_constants.dart';
-import 'package:waiters_wallet/src/widgets/custom_auth_button.dart';
-import 'package:waiters_wallet/src/widgets/custom_textfield.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
+import 'package:waiters_wallet/src/widgets/widgets.dart';
 
-class AddTipSheet extends StatelessWidget {
-  const AddTipSheet({Key? key}) : super(key: key);
+
+class AddTipSheet extends ConsumerWidget {
+  const AddTipSheet({
+    Key? key,
+    required this.dateTime,
+  }) : super(key: key);
+
+  final DateTime dateTime;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextEditingController tipAmountController = TextEditingController();
+    final TextEditingController hoursController = TextEditingController();
+    final TextEditingController notesController = TextEditingController();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -24,32 +32,33 @@ class AddTipSheet extends StatelessWidget {
             const SizedBox(height: 10),
             CustomTextField(
               hintText: "Tip Amount",
-              controller: TextEditingController(),
+              controller: tipAmountController,
               errorText: "",
             ),
             CustomTextField(
               hintText: "Hours Worked",
-              controller: TextEditingController(),
+              controller: hoursController,
               errorText: "",
             ),
             CustomTextField(
               hintText: "Notes",
-              controller: TextEditingController(),
+              controller: notesController,
               errorText: "",
             ),
             const Spacer(),
-            CustomAuthButton(text: "ADD", onPress: () {
-              Navigator.of(context).pop();
-              Fluttertoast.showToast(
-                msg: "Tip Added",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: skinColorConst,
-                textColor: Colors.black,
-                fontSize: 16.0,
-              );
-            }),
+            CustomAuthButton(
+                text: "ADD",
+                onPress: () {
+                  ref
+                      .read(calendarEventControllerProvider.notifier)
+                      .addCalendarEvent(
+                        dateTime: dateTime,
+                        eventName: 'Tips',
+                        title: tipAmountController.text,
+                      );
+
+                  Navigator.of(context).pop();
+                }),
             const SizedBox(height: 40),
           ],
         ),
