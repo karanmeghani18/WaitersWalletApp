@@ -68,7 +68,8 @@ class _SignupScreenState extends State<SignupScreen> {
       nameErrorText = validateFullName(nameText) ?? "";
     });
     if (validateEmail(emailText) == null &&
-        validatePassword(passwordText) == null) {
+        validatePassword(passwordText) == null &&
+        validateFullName(nameText) == null) {
       signUserUp();
     }
   }

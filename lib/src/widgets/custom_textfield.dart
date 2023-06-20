@@ -7,12 +7,14 @@ class CustomTextField extends StatelessWidget {
     this.isPassword = false,
     required this.controller,
     required this.errorText,
+    this.kbType = TextInputType.text,
   });
 
   final String hintText;
   final bool isPassword;
   final TextEditingController controller;
   final String errorText;
+  final TextInputType kbType;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class CustomTextField extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                 ),
+                keyboardType: kbType,
                 decoration: InputDecoration(
                   hintText: hintText,
                   hintStyle: const TextStyle(
