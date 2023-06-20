@@ -34,11 +34,13 @@ class AddTipSheet extends ConsumerWidget {
               hintText: "Tip Amount",
               controller: tipAmountController,
               errorText: "",
+              kbType: TextInputType.number,
             ),
             CustomTextField(
               hintText: "Hours Worked",
               controller: hoursController,
               errorText: "",
+              kbType: TextInputType.number,
             ),
             CustomTextField(
               hintText: "Notes",

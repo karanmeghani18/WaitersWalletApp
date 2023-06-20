@@ -17,7 +17,7 @@ class EarningsChart extends StatefulWidget {
         skinColorConst.darken(60),
       ];
 
-  final Color barBackgroundColor = Colors.transparent;
+  final Color barBackgroundColor = Colors.black;
   final Color barColor = skinColorConst;
   final Color touchedBarColor = skyBlueColorConst;
 
@@ -140,8 +140,8 @@ class EarningsChartState extends State<EarningsChart> {
     return BarChartData(
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
-          tooltipBgColor: widget.barBackgroundColor.darken(80),
-          tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+          tooltipBgColor: widget.barBackgroundColor.darken(80).withOpacity(0.6),
+          tooltipHorizontalAlignment: FLHorizontalAlignment.center,
           tooltipMargin: -10,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             String weekDay;
@@ -170,6 +170,8 @@ class EarningsChartState extends State<EarningsChart> {
               default:
                 throw Error();
             }
+
+            final earnings = rod.toY - 1;
             return BarTooltipItem(
               '$weekDay\n',
               const TextStyle(
@@ -179,7 +181,7 @@ class EarningsChartState extends State<EarningsChart> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: (rod.toY - 1).toString(),
+                  text: "\$$earnings",
                   style: TextStyle(
                     color: widget.touchedBarColor,
                     fontSize: 16,
@@ -207,8 +209,18 @@ class EarningsChartState extends State<EarningsChart> {
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              final total = showingGroups()[value.toInt()].barRods.first.toY;
+              final totalInInt = total.toInt();
+              if(touchedIndex == value.toInt()){
+                return Text("\$${totalInInt-1}");
+              }
+              return Text("\$$totalInInt");
+            },
+          ),
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
