@@ -6,7 +6,12 @@ import 'package:waiters_wallet/src/constants/constants.dart';
 import 'package:waiters_wallet/src/utils/color_extensions.dart';
 
 class EarningsChart extends StatefulWidget {
-  EarningsChart({super.key});
+  EarningsChart({
+    super.key,
+    this.chartLevel = 0,
+  });
+
+  final int chartLevel;
 
   List<Color> get availableColors => <Color>[
         skinColorConst.darken(40),
@@ -115,7 +120,9 @@ class EarningsChartState extends State<EarningsChart> {
     );
   }
 
-  List<BarChartGroupData> showingGroups() => List.generate(7, (i) {
+  List<BarChartGroupData> showingGroups() {
+    List<BarChartGroupData> weekList() {
+      return List.generate(7, (i) {
         switch (i) {
           case 0:
             return makeGroupData(0, 50, isTouched: i == touchedIndex);
@@ -135,6 +142,50 @@ class EarningsChartState extends State<EarningsChart> {
             return throw Error();
         }
       });
+    }
+
+    List<BarChartGroupData> monthList() {
+      return List.generate(12, (i) {
+        switch (i) {
+          case 0:
+            return makeGroupData(0, 500, isTouched: i == touchedIndex);
+          case 1:
+            return makeGroupData(1, 605, isTouched: i == touchedIndex);
+          case 2:
+            return makeGroupData(2, 520, isTouched: i == touchedIndex);
+          case 3:
+            return makeGroupData(3, 702, isTouched: i == touchedIndex);
+          case 4:
+            return makeGroupData(4, 920, isTouched: i == touchedIndex);
+          case 5:
+            return makeGroupData(5, 410.5, isTouched: i == touchedIndex);
+          case 6:
+            return makeGroupData(6, 660, isTouched: i == touchedIndex);
+          case 7:
+            return makeGroupData(7, 270.5, isTouched: i == touchedIndex);
+          case 8:
+            return makeGroupData(8, 270, isTouched: i == touchedIndex);
+          case 9:
+            return makeGroupData(9, 800, isTouched: i == touchedIndex);
+          case 10:
+            return makeGroupData(10, 720, isTouched: i == touchedIndex);
+          case 11:
+            return makeGroupData(11, 700, isTouched: i == touchedIndex);
+          default:
+            return throw Error();
+        }
+      });
+    }
+
+    switch (widget.chartLevel) {
+      case 0:
+        return weekList();
+      case 1:
+        return monthList();
+      default:
+        return [];
+    }
+  }
 
   BarChartData mainBarData() {
     return BarChartData(
@@ -144,36 +195,21 @@ class EarningsChartState extends State<EarningsChart> {
           tooltipHorizontalAlignment: FLHorizontalAlignment.center,
           tooltipMargin: -10,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            String weekDay;
-            switch (group.x) {
+            String toolTipString;
+            switch (widget.chartLevel) {
               case 0:
-                weekDay = 'Monday';
+                toolTipString = getWeekTipString(group.x);
                 break;
               case 1:
-                weekDay = 'Tuesday';
-                break;
-              case 2:
-                weekDay = 'Wednesday';
-                break;
-              case 3:
-                weekDay = 'Thursday';
-                break;
-              case 4:
-                weekDay = 'Friday';
-                break;
-              case 5:
-                weekDay = 'Saturday';
-                break;
-              case 6:
-                weekDay = 'Sunday';
+                toolTipString = getMonthTipString(group.x);
                 break;
               default:
-                throw Error();
+                toolTipString = "";
             }
 
             final earnings = rod.toY - 1;
             return BarTooltipItem(
-              '$weekDay\n',
+              '$toolTipString\n',
               const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -211,12 +247,12 @@ class EarningsChartState extends State<EarningsChart> {
         ),
         topTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
+            showTitles: widget.chartLevel == 0 ? true : false,
             getTitlesWidget: (value, meta) {
               final total = showingGroups()[value.toInt()].barRods.first.toY;
               final totalInInt = total.toInt();
-              if(touchedIndex == value.toInt()){
-                return Text("\$${totalInInt-1}");
+              if (touchedIndex == value.toInt()) {
+                return Text("\$${totalInInt - 1}");
               }
               return Text("\$$totalInInt");
             },
@@ -243,44 +279,178 @@ class EarningsChartState extends State<EarningsChart> {
     );
   }
 
+  String getMonthTipString(int x) {
+    String titleString = "";
+    switch (x) {
+      case 0:
+        titleString = 'January';
+        break;
+      case 1:
+        titleString = 'February';
+        break;
+      case 2:
+        titleString = 'March';
+        break;
+      case 3:
+        titleString = 'April';
+        break;
+      case 4:
+        titleString = 'May';
+        break;
+      case 5:
+        titleString = 'June';
+        break;
+      case 6:
+        titleString = 'July';
+        break;
+      case 7:
+        titleString = 'August';
+        break;
+      case 8:
+        titleString = 'September';
+        break;
+      case 9:
+        titleString = 'October';
+        break;
+      case 10:
+        titleString = 'November';
+        break;
+      case 11:
+        titleString = 'December';
+        break;
+      default:
+        throw Error();
+    }
+    return titleString;
+  }
+
+  String getWeekTipString(int x) {
+    String titleString = "";
+    switch (x) {
+      case 0:
+        titleString = 'Monday';
+        break;
+      case 1:
+        titleString = 'Tuesday';
+        break;
+      case 2:
+        titleString = 'Wednesday';
+        break;
+      case 3:
+        titleString = 'Thursday';
+        break;
+      case 4:
+        titleString = 'Friday';
+        break;
+      case 5:
+        titleString = 'Saturday';
+        break;
+      case 6:
+        titleString = 'Sunday';
+        break;
+      default:
+        throw Error();
+    }
+    return titleString;
+  }
+
   Widget getTitles(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
       fontSize: 14,
     );
-    Widget text;
-    switch (value.toInt()) {
+    String text;
+    switch (widget.chartLevel) {
       case 0:
-        text = const Text('S', style: style);
+        text = getWeekTitleString(value.toInt());
         break;
       case 1:
-        text = const Text('M', style: style);
-        break;
-      case 2:
-        text = const Text('T', style: style);
-        break;
-      case 3:
-        text = const Text('W', style: style);
-        break;
-      case 4:
-        text = const Text('T', style: style);
-        break;
-      case 5:
-        text = const Text('F', style: style);
-        break;
-      case 6:
-        text = const Text('S', style: style);
+        text = getMonthTitleString(value.toInt());
         break;
       default:
-        text = const Text('', style: style);
-        break;
+        text = "";
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 16,
-      child: text,
+      child: Text(text, style: style),
     );
+  }
+
+  String getWeekTitleString(int x) {
+    String titleString = "";
+    switch (x) {
+      case 0:
+        titleString = 'M';
+        break;
+      case 1:
+        titleString = 'T';
+        break;
+      case 2:
+        titleString = 'W';
+        break;
+      case 3:
+        titleString = 'T';
+        break;
+      case 4:
+        titleString = 'F';
+        break;
+      case 5:
+        titleString = 'S';
+        break;
+      case 6:
+        titleString = 'S';
+        break;
+      default:
+        throw Error();
+    }
+    return titleString;
+  }
+
+  String getMonthTitleString(int x) {
+    String titleString = "";
+    switch (x) {
+      case 0:
+        titleString = 'J';
+        break;
+      case 1:
+        titleString = 'F';
+        break;
+      case 2:
+        titleString = 'M';
+        break;
+      case 3:
+        titleString = 'A';
+        break;
+      case 4:
+        titleString = 'M';
+        break;
+      case 5:
+        titleString = 'J';
+        break;
+      case 6:
+        titleString = 'J';
+        break;
+      case 7:
+        titleString = 'A';
+        break;
+      case 8:
+        titleString = 'S';
+        break;
+      case 9:
+        titleString = 'O';
+        break;
+      case 10:
+        titleString = 'N';
+        break;
+      case 11:
+        titleString = 'D';
+        break;
+      default:
+        throw Error();
+    }
+    return titleString;
   }
 
   BarChartData randomData() {
