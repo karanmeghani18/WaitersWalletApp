@@ -25,6 +25,7 @@ class LoginController extends StateNotifier<LoginState> {
         await _repository.loginUser(email: email, password: password);
     if (errorText.isEmpty) {
       state = state.copyWith(status: LoginStatus.loginUserSuccess);
+      await _repository.fetchUser(email);
     } else {
       state = state.copyWith(
         status: LoginStatus.loginUserFailure,

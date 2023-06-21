@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import 'package:waiters_wallet/src/features/addtip/models/tip_model.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
-
 
 class AddTipSheet extends ConsumerWidget {
   const AddTipSheet({
@@ -51,14 +52,17 @@ class AddTipSheet extends ConsumerWidget {
             CustomAuthButton(
                 text: "ADD",
                 onPress: () {
+                  final tipModel = TipModel(
+                    fullDateTime: dateTime,
+                    tipAmount: double.parse(tipAmountController.text),
+                    hoursWorked: double.parse(hoursController.text),
+                    restaurantId: 1,
+                    notes: notesController.text,
+                    id: const Uuid().v4(),
+                  );
                   ref
                       .read(calendarEventControllerProvider.notifier)
-                      .addCalendarEvent(
-                        dateTime: dateTime,
-                        eventName: 'Tips',
-                        title: tipAmountController.text,
-                      );
-
+                      .addCalendarEvent(tipModel: tipModel);
                   Navigator.of(context).pop();
                 }),
             const SizedBox(height: 40),

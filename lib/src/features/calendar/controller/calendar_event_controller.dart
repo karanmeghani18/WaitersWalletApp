@@ -1,15 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:equatable/equatable.dart';
+import 'package:waiters_wallet/src/features/addtip/models/tip_model.dart';
 import 'package:waiters_wallet/src/features/calendar/repository/calendar_repo.dart';
 
 part 'calendar_event_state.dart';
 
 final calendarEventControllerProvider = StateNotifierProvider.autoDispose<
     CalendarEventController, CalendarEventState>(
-  (ref) => CalendarEventController(
-    repository: ref.read(calendarRepoProvider)
-  ),
+  (ref) => CalendarEventController(repository: ref.read(calendarRepoProvider)),
 );
 
 class CalendarEventController extends StateNotifier<CalendarEventState> {
@@ -21,23 +20,40 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
 
   EventController eventController = EventController();
 
-  void addCalendarEvent(
-      {required DateTime dateTime,
-      required String eventName,
-      required String title}) {
+  Future<void> addCalendarEvent({required TipModel tipModel}) async {
+    state = state.copyWith(status: CalendarEventStatus.addingTip);
+
     final event = CalendarEventData(
-      date: dateTime,
-      title: title,
-      event: eventName,
+      date: tipModel.fullDateTime,
+      title: tipModel.tipAmount.toString(),
+      event: tipModel.id,
     );
 
     final List<CalendarEventData> events = [...state.events, event];
 
-    state = state.copyWith(
-      status: CalendarEventStatus.addEvent,
-      events: events,
+    String errorText = await _repository.addTipToFirebase(
+      tipModel,
+      tipModel.id,
     );
+
+    if (errorText.isEmpty) {
+      state = state.copyWith(
+        status: CalendarEventStatus.addTipSuccess,
+        events: events,
+      );
+    } else {
+      state = state.copyWith(
+        status: CalendarEventStatus.addTipFailure,
+        events: events,
+        message: errorText,
+      );
+    }
   }
 
-  void removeCalendarEvent() {}
+  void removeAllEvents() {
+    state = state.copyWith(
+      events: [],
+      status: CalendarEventStatus.logoutDeleteEvents,
+    );
+  }
 }
