@@ -22,7 +22,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool rememberMe = false;
-  final emailController = TextEditingController(text: "test1@gmail.com");
+  final emailController = TextEditingController(text: "john1@gmail.com");
   final passwordController = TextEditingController(text: "12345678");
   String emailErrorText = "";
   String passwordErrorText = "";
