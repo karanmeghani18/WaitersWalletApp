@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+  ResetPasswordScreen({Key? key}) : super(key: key);
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(
                 top: 48,
                 bottom: 14,
@@ -25,7 +26,7 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(
                 left: 20,
                 right: 20,
@@ -39,16 +40,18 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
               ),
             ),
-            CustomTextField(hintText: "Email"),
-            SizedBox(height: 40),
-            Spacer(),
-            CustomAuthButton(text: "REQUEST RESET CODE"),
-            SizedBox(height: 50),
+            CustomTextField(
+              hintText: "Email",
+              controller: emailController,
+              errorText: "",
+            ),
+            const SizedBox(height: 40),
+            const Spacer(),
+            CustomAuthButton(text: "REQUEST RESET CODE", onPress: () {}),
+            const SizedBox(height: 50),
           ],
         ),
       ),
     );
   }
 }
-
-

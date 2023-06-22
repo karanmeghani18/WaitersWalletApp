@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:waiters_wallet/src/features/restaurants/addrestaurant/Views/addrestaurant_screen.dart';
 import 'package:waiters_wallet/src/features/authentication/authentication.dart';
+import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
 import 'package:waiters_wallet/src/features/onboarding/views/onboarding_screen.dart';
 
 import '../features/splash/splash.dart' show SplashScreen;
 
 class Routing {
   static const String splashScreen = '/';
+
+  // static const String splashScreen = '/splash';
   static const String loginScreen = '/login';
   static const String signupScreen = '/signup';
   static const String resetPasswordScreen = '/resetPassword';
   static const String onBoardingScreen = '/onBoarding';
   static const String homeScreen = '/home';
+  static const String addRestaurant = '/addRestaurant';
+
+  // static const String homeScreen = '/';
 
   static Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -44,9 +51,23 @@ class Routing {
         );
       case resetPasswordScreen:
         return MaterialPageRoute(
-          builder: (context) => const ResetPasswordScreen(),
+          builder: (context) => ResetPasswordScreen(),
           settings: const RouteSettings(
             name: resetPasswordScreen,
+          ),
+        );
+      case homeScreen:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+          settings: const RouteSettings(
+            name: homeScreen,
+          ),
+        );
+      case addRestaurant:
+        return MaterialPageRoute(
+          builder: (context) => const AddRestaurantScreen(),
+          settings: const RouteSettings(
+            name: addRestaurant,
           ),
         );
       default:
