@@ -4,7 +4,7 @@ class TipModel {
   final double tipAmount;
   final double hoursWorked;
   final String notes;
-  final int restaurantId;
+  final String restaurantId;
 
   TipModel({
     required this.fullDateTime,
