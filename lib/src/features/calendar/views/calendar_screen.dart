@@ -1,10 +1,14 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/authentication/login/controller/login_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/widgets/widgets.dart';
 
 import 'package:waiters_wallet/src/constants/constants.dart';
+
+import '../../addtip/models/restaurant_model.dart';
+import '../../restaurants/addrestaurant/controller/addrestaurant_controller.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({Key? key}) : super(key: key);
@@ -16,6 +20,7 @@ class CalendarScreen extends ConsumerStatefulWidget {
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   bool isCustomDay = false;
   DateTime selectedDate = DateTime.now();
+  List<RestaurantModel> restaurants = [];
 
   Color decideCellColor(DateTime cellDate, bool isToday, bool isInMonth) {
     if (!isInMonth) {
@@ -30,6 +35,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(loginControllerProvider, (previous, next) {
+      if(next.status == LoginStatus.loginUserSuccess){
+        restaurants =
+            ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
+      }
+    });
+    restaurants =
+        ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -86,7 +99,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     .toList();
                 final tip = tipsList[index];
                 return TipTile(
-                  restaurantName: "Pie Bar",
+                  restaurantName: restaurants
+                      .firstWhere((element) => element.id == tip.restaurantId)
+                      .restaurantName,
                   hoursWorked: tip.hoursWorked,
                   tipAmount: tip.tipAmount,
                   onDismiss: () {

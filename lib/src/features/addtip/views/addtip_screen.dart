@@ -25,13 +25,27 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
   final TextEditingController tipAmountController = TextEditingController();
   final TextEditingController hoursController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
+  String? selectedItem = "";
+  List<RestaurantModel> restaurants = [];
 
+  @override
+  void initState() {
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    restaurants =
+        ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
+    selectedItem = restaurants.first.restaurantName;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<RestaurantModel> restaurants =
+    restaurants =
         ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
-    String? selectedItem = restaurants[0].restaurantName;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -94,11 +108,15 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
             CustomAuthButton(
                 text: "ADD",
                 onPress: () {
+                  print(selectedItem);
                   final tipModel = TipModel(
                     fullDateTime: widget.dateTime,
                     tipAmount: double.parse(tipAmountController.text),
                     hoursWorked: double.parse(hoursController.text),
-                    restaurantId: 1,
+                    restaurantId: restaurants
+                        .firstWhere(
+                            (element) => element.restaurantName == selectedItem)
+                        .id,
                     notes: notesController.text,
                     id: const Uuid().v4(),
                   );
