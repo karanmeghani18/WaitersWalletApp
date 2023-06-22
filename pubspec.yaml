@@ -47,6 +47,7 @@ dependencies:
   cloud_firestore: ^4.8.1
   loading_overlay: ^0.3.0
   uuid: ^3.0.7
+  intl: ^0.18.1
 
 
 dev_dependencies:

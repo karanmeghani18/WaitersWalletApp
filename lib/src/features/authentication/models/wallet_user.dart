@@ -15,8 +15,19 @@ class WalletUser {
     return WalletUser(
       fullName: json["full_name"],
       email: json["email"],
-      restaurants:
-          json["restaurants"] != null ? List.from(json["restaurants"]) : [],
+      restaurants: [],
+    );
+  }
+
+  WalletUser copyWith({
+    String? fullName,
+    String? email,
+    List<RestaurantModel>? restaurants,
+  }) {
+    return WalletUser(
+      fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
+      restaurants: restaurants ?? this.restaurants,
     );
   }
 }

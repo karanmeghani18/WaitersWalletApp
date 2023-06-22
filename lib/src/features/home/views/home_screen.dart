@@ -7,8 +7,6 @@ import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
 import 'package:waiters_wallet/src/features/earnings/views/earnings_screen.dart';
 import 'package:waiters_wallet/src/features/goals/views/goals_screen.dart';
-
-import '../../addrestaurant/Views/addrestaurant_screen.dart';
 import '../../calendar/controller/calendar_event_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -48,8 +46,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(calendarEventControllerProvider, (previous, next) {
+      print("status: ${next.status}");
+
       if (next.status == CalendarEventStatus.addTipSuccess) {
-        final event = next.events.last;
+        final event = next.calendarEvents.last;
 
         CalendarControllerProvider.of(context).controller.add(event);
 
@@ -64,6 +64,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       }
 
+      if (next.status == CalendarEventStatus.fetchingEventsSuccess) {
+        for (var event in next.calendarEvents) {
+          CalendarControllerProvider.of(context).controller.add(event);
+        }
+      }
       if (next.status == CalendarEventStatus.logoutDeleteEvents) {
         CalendarControllerProvider.of(context)
             .controller

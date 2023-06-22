@@ -18,7 +18,6 @@ class AddRestaurantState extends Equatable {
 
   AddRestaurantState copyWith({
     AddRestaurantStatus? status,
-
     String? message,
   }) {
     return AddRestaurantState(

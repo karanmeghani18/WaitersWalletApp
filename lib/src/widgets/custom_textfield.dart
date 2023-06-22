@@ -39,7 +39,7 @@ class CustomTextField extends StatelessWidget {
                 controller: controller,
                 cursorColor: Colors.black,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
                 keyboardType: kbType,
                 decoration: InputDecoration(

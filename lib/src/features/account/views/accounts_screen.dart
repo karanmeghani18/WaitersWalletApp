@@ -25,16 +25,43 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(calendarEventControllerProvider, (previous, next) {});
+    final user = ref.read(authRepoProvider).getUser();
     return Scaffold(
       body: Column(
         children: [
           SafeArea(
-              child: Text(
-            ref.read(authRepoProvider).getUser().fullName,
-          )),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, bottom: 20),
+              child: Row(
+                children: [
+                  Text(
+                    "Hello ${user.fullName}!",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CustomAuthButton(text: "Change Password", onPress: () {}),
+          const SizedBox(height: 12),
+          CustomAuthButton(text: "Edit Profile", onPress: () {}),
+          const SizedBox(height: 12),
+          CustomAuthButton(
+              text: "Add Restaurant",
+              onPress: () {
+                Navigator.of(context).pushNamed(Routing.addRestaurant);
+              }),
+          const SizedBox(height: 12),
           const Spacer(),
-          CustomAuthButton(text: "Logout", onPress: logoutUser),
-          const Padding(padding: EdgeInsets.only(bottom: 20)),
+          CustomAuthButton(
+            text: "Logout",
+            onPress: logoutUser,
+            isRed: true,
+          ),
+          const Padding(padding: EdgeInsets.only(bottom: 14)),
         ],
       ),
     );

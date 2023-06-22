@@ -6,6 +6,7 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/authentication/login/controller/login_controller.dart';
+import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
 import 'package:waiters_wallet/src/validators/validators.dart';
 import 'package:waiters_wallet/src/widgets/custom_error_dialog.dart';
@@ -22,7 +23,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool rememberMe = false;
-  final emailController = TextEditingController(text: "john1@gmail.com");
+  final emailController = TextEditingController(text: "johndoe@gmail.com");
   final passwordController = TextEditingController(text: "12345678");
   String emailErrorText = "";
   String passwordErrorText = "";
@@ -49,8 +50,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(loginControllerProvider, (previous, next) {
+    ref.listen(loginControllerProvider, (previous, next) async {
       if (next.status == LoginStatus.loginUserSuccess) {
+        ref
+            .read(calendarEventControllerProvider.notifier)
+            .fetchTipsFromServer();
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) {
           return const HomeScreen();
@@ -70,6 +74,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       }
     });
+
+    ref.listen(calendarEventControllerProvider, (previous, next) {});
     return Scaffold(
       body: LoadingOverlay(
         isLoading:

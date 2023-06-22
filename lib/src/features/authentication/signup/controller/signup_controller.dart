@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/authentication/models/wallet_user.dart';
 import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
 
 part 'signup_state.dart';
@@ -28,12 +29,19 @@ class SignUpController extends StateNotifier<SignUpState> {
       String errorString =
           await _repository.addUser(fullName: fullName, email: email);
       if (errorText.isEmpty) {
+        _repository.currentUser = WalletUser(
+          fullName: fullName,
+          email: email,
+          restaurants: [],
+        );
         state = state.copyWith(status: SignUpStatus.signingUpUserSuccess);
       } else {
-        state = state.copyWith(status: SignUpStatus.signingUpUserFailure,errorText: errorString);
+        state = state.copyWith(
+            status: SignUpStatus.signingUpUserFailure, errorText: errorString);
       }
     } else {
-      state = state.copyWith(status: SignUpStatus.signingUpUserFailure, errorText: errorText);
+      state = state.copyWith(
+          status: SignUpStatus.signingUpUserFailure, errorText: errorText);
     }
   }
 }

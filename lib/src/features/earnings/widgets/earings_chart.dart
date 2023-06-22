@@ -9,9 +9,13 @@ class EarningsChart extends StatefulWidget {
   EarningsChart({
     super.key,
     this.chartLevel = 0,
+    required this.weekdata,
+    required this.monthdata,
   });
 
   final int chartLevel;
+  final List<double> weekdata;
+  final List<double> monthdata;
 
   List<Color> get availableColors => <Color>[
         skinColorConst.darken(40),
@@ -22,7 +26,7 @@ class EarningsChart extends StatefulWidget {
         skinColorConst.darken(60),
       ];
 
-  final Color barBackgroundColor = Colors.black;
+  final Color barBackgroundColor = Colors.black.withOpacity(0.6);
   final Color barColor = skinColorConst;
   final Color touchedBarColor = skyBlueColorConst;
 
@@ -125,19 +129,26 @@ class EarningsChartState extends State<EarningsChart> {
       return List.generate(7, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, 50, isTouched: i == touchedIndex);
+            return makeGroupData(0, widget.weekdata[0],
+                isTouched: i == touchedIndex);
           case 1:
-            return makeGroupData(1, 60.5, isTouched: i == touchedIndex);
+            return makeGroupData(1, widget.weekdata[1],
+                isTouched: i == touchedIndex);
           case 2:
-            return makeGroupData(2, 50, isTouched: i == touchedIndex);
+            return makeGroupData(2, widget.weekdata[2],
+                isTouched: i == touchedIndex);
           case 3:
-            return makeGroupData(3, 70.5, isTouched: i == touchedIndex);
+            return makeGroupData(3, widget.weekdata[3],
+                isTouched: i == touchedIndex);
           case 4:
-            return makeGroupData(4, 90, isTouched: i == touchedIndex);
+            return makeGroupData(4, widget.weekdata[4],
+                isTouched: i == touchedIndex);
           case 5:
-            return makeGroupData(5, 110.5, isTouched: i == touchedIndex);
+            return makeGroupData(5, widget.weekdata[5],
+                isTouched: i == touchedIndex);
           case 6:
-            return makeGroupData(6, 60.5, isTouched: i == touchedIndex);
+            return makeGroupData(6, widget.weekdata[6],
+                isTouched: i == touchedIndex);
           default:
             return throw Error();
         }
@@ -148,29 +159,41 @@ class EarningsChartState extends State<EarningsChart> {
       return List.generate(12, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, 500, isTouched: i == touchedIndex);
+            return makeGroupData(0, widget.monthdata[0],
+                isTouched: i == touchedIndex);
           case 1:
-            return makeGroupData(1, 605, isTouched: i == touchedIndex);
+            return makeGroupData(1, widget.monthdata[1],
+                isTouched: i == touchedIndex);
           case 2:
-            return makeGroupData(2, 520, isTouched: i == touchedIndex);
+            return makeGroupData(2, widget.monthdata[2],
+                isTouched: i == touchedIndex);
           case 3:
-            return makeGroupData(3, 702, isTouched: i == touchedIndex);
+            return makeGroupData(3, widget.monthdata[3],
+                isTouched: i == touchedIndex);
           case 4:
-            return makeGroupData(4, 920, isTouched: i == touchedIndex);
+            return makeGroupData(4, widget.monthdata[4],
+                isTouched: i == touchedIndex);
           case 5:
-            return makeGroupData(5, 410.5, isTouched: i == touchedIndex);
+            return makeGroupData(5, widget.monthdata[5],
+                isTouched: i == touchedIndex);
           case 6:
-            return makeGroupData(6, 660, isTouched: i == touchedIndex);
+            return makeGroupData(6, widget.monthdata[6],
+                isTouched: i == touchedIndex);
           case 7:
-            return makeGroupData(7, 270.5, isTouched: i == touchedIndex);
+            return makeGroupData(7, widget.monthdata[7],
+                isTouched: i == touchedIndex);
           case 8:
-            return makeGroupData(8, 270, isTouched: i == touchedIndex);
+            return makeGroupData(8, widget.monthdata[8],
+                isTouched: i == touchedIndex);
           case 9:
-            return makeGroupData(9, 800, isTouched: i == touchedIndex);
+            return makeGroupData(9, widget.monthdata[9],
+                isTouched: i == touchedIndex);
           case 10:
-            return makeGroupData(10, 720, isTouched: i == touchedIndex);
+            return makeGroupData(10, widget.monthdata[10],
+                isTouched: i == touchedIndex);
           case 11:
-            return makeGroupData(11, 700, isTouched: i == touchedIndex);
+            return makeGroupData(11, widget.monthdata[11],
+                isTouched: i == touchedIndex);
           default:
             return throw Error();
         }
