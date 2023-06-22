@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:waiters_wallet/src/constants/color_constants.dart';
 import 'package:waiters_wallet/src/features/addtip/models/tip_model.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
+import 'package:waiters_wallet/src/features/restaurants/addrestaurant/controller/addrestaurant_controller.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
-class AddTipSheet extends ConsumerWidget {
+import '../models/restaurant_model.dart';
+
+class AddTipSheet extends ConsumerStatefulWidget {
   const AddTipSheet({
     Key? key,
     required this.dateTime,
@@ -14,10 +18,20 @@ class AddTipSheet extends ConsumerWidget {
   final DateTime dateTime;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final TextEditingController tipAmountController = TextEditingController();
-    final TextEditingController hoursController = TextEditingController();
-    final TextEditingController notesController = TextEditingController();
+  ConsumerState<AddTipSheet> createState() => _AddTipSheetState();
+}
+
+class _AddTipSheetState extends ConsumerState<AddTipSheet> {
+  final TextEditingController tipAmountController = TextEditingController();
+  final TextEditingController hoursController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
+
+
+  @override
+  Widget build(BuildContext context) {
+    final List<RestaurantModel> restaurants =
+        ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
+    String? selectedItem = restaurants[0].restaurantName;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -48,12 +62,40 @@ class AddTipSheet extends ConsumerWidget {
               controller: notesController,
               errorText: "",
             ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: DropdownButtonFormField<String>(
+                padding: EdgeInsets.zero,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: skinColorConst,
+                    ),
+                  ),
+                ),
+                value: selectedItem,
+                items: restaurants
+                    .map((e) => DropdownMenuItem<String>(
+                          value: e.restaurantName,
+                          child: Text(e.restaurantName),
+                        ))
+                    .toList(),
+                onChanged: (selected) => setState(() {
+                  selectedItem = selected;
+                }),
+              ),
+            ),
             const Spacer(),
             CustomAuthButton(
                 text: "ADD",
                 onPress: () {
                   final tipModel = TipModel(
-                    fullDateTime: dateTime,
+                    fullDateTime: widget.dateTime,
                     tipAmount: double.parse(tipAmountController.text),
                     hoursWorked: double.parse(hoursController.text),
                     restaurantId: 1,

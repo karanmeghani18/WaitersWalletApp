@@ -20,6 +20,7 @@ class DateWidget extends StatelessWidget {
         color: !isInMonth ? Colors.grey.withOpacity(0.7) : Colors.black,
         fontWeight: FontWeight.bold,
         fontStyle: hasEvent ? FontStyle.italic : null,
+        fontSize: hasEvent ? 12 : null,
       ),
     );
   }

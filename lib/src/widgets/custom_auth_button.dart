@@ -6,10 +6,12 @@ class CustomAuthButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPress,
+    this.isRed = false,
   });
 
   final String text;
   final VoidCallback onPress;
+  final bool isRed;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,10 @@ class CustomAuthButton extends StatelessWidget {
       child: Container(
         height: 48,
         margin: const EdgeInsets.symmetric(horizontal: 20),
-        color: skinColorConst,
+        decoration: BoxDecoration(
+          color: isRed ? Colors.red : skinColorConst,
+          borderRadius: BorderRadius.circular(8)
+        ),
         child: Center(
           child: Text(
             text,

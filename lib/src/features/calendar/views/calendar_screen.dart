@@ -37,6 +37,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         children: [
           Expanded(
             child: MonthView(
+              // useAvailableVerticalSpace: true,
               controller: ref
                   .read(calendarEventControllerProvider.notifier)
                   .eventController,
@@ -46,18 +47,61 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   selectedDate = date;
                 });
               },
-              cellAspectRatio: 1.1,
+              cellAspectRatio: 1.15,
               cellBuilder: (date, event, isToday, isInMonth) {
                 final bool hasEvent = event.isNotEmpty;
+                double totalTip = 0.0;
+                for (var e in event) {
+                  final total = double.parse(e.title);
+                  totalTip += total;
+                }
                 return CustomDateCell(
                   hasEvent: hasEvent,
                   cellColor: decideCellColor(date, isToday, isInMonth),
                   isInMonth: isInMonth,
                   date: date,
-                  eventTitle: hasEvent ? event.first.title : "",
+                  eventTitle: hasEvent ? "$totalTip" : "",
                 );
               },
               headerStyle: calendarHeaderStyle,
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: ListView.builder(
+              padding: const EdgeInsets.all(0),
+              itemCount: ref
+                  .watch(calendarEventControllerProvider)
+                  .tips
+                  .where((element) =>
+                      element.fullDateTime.withoutTime ==
+                      selectedDate.withoutTime)
+                  .length,
+              itemBuilder: (context, index) {
+                final state = ref.watch(calendarEventControllerProvider);
+                final tipsList = state.tips
+                    .where((element) =>
+                        element.fullDateTime.withoutTime ==
+                        selectedDate.withoutTime)
+                    .toList();
+                final tip = tipsList[index];
+                return TipTile(
+                  restaurantName: "Pie Bar",
+                  hoursWorked: tip.hoursWorked,
+                  tipAmount: tip.tipAmount,
+                  onDismiss: () {
+                    CalendarControllerProvider.of(context)
+                        .controller
+                        .removeWhere((element) => element.event == tip.id);
+                  },
+                  confirmDismiss: () async {
+                    ref
+                        .read(calendarEventControllerProvider.notifier)
+                        .deleteTip(tip.id);
+                    return true;
+                  },
+                );
+              },
             ),
           ),
         ],

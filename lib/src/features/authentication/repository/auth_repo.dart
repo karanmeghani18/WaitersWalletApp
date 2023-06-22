@@ -97,6 +97,14 @@ class AuthenticationRepository {
     currentUser = null;
   }
 
+  void addRestaurant(RestaurantModel newRestaurant) {
+    currentUser = currentUser!.copyWith(
+      restaurants: [...currentUser!.restaurants, newRestaurant],
+    );
+  }
+
+
+
   WalletUser getUser() {
     return currentUser!;
   }

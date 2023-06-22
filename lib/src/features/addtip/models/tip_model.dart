@@ -25,14 +25,19 @@ class TipModel {
     };
   }
 
-  TipModel fromJson(Map<String, dynamic> json) {
+  static TipModel fromJson(Map<String, dynamic> json, String id) {
     return TipModel(
-      fullDateTime: DateTime(json["fullDateTime"]),
-      tipAmount: double.parse(json["tipAmount"]),
-      hoursWorked: double.parse(json["hoursWorked"]),
-      restaurantId: int.parse(json["restaurantId"]),
+      fullDateTime: DateTime.parse(json["fullDateTime"]),
+      tipAmount: json["tipAmount"],
+      hoursWorked: json["hoursWorked"],
+      restaurantId: json["restaurantId"],
       notes: json["notes"],
-      id: json["id"],
+      id: id,
     );
+  }
+
+  @override
+  String toString() {
+    return 'TipModel{id: $id, fullDateTime: $fullDateTime, tipAmount: $tipAmount, hoursWorked: $hoursWorked, notes: $notes, restaurantId: $restaurantId}';
   }
 }
