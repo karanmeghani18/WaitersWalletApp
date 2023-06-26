@@ -13,9 +13,11 @@ class AddTipSheet extends ConsumerStatefulWidget {
   const AddTipSheet({
     Key? key,
     required this.dateTime,
+    this.tipModel,
   }) : super(key: key);
 
   final DateTime dateTime;
+  final TipModel? tipModel;
 
   @override
   ConsumerState<AddTipSheet> createState() => _AddTipSheetState();
@@ -27,11 +29,12 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
   final TextEditingController notesController = TextEditingController();
   String? selectedItem = "";
   List<RestaurantModel> restaurants = [];
+  TipModel? updatedTip;
 
   @override
   void initState() {
-
     super.initState();
+    updatedTip = widget.tipModel;
   }
 
   @override
@@ -39,7 +42,16 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
     super.didChangeDependencies();
     restaurants =
         ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
-    selectedItem = restaurants.first.restaurantName;
+    if (widget.tipModel != null) {
+      tipAmountController.text = widget.tipModel!.tipAmount.toString();
+      hoursController.text = widget.tipModel!.hoursWorked.toString();
+      notesController.text = widget.tipModel!.notes;
+      selectedItem = restaurants
+          .firstWhere((element) => element.id == widget.tipModel!.restaurantId)
+          .restaurantName;
+    } else {
+      selectedItem = restaurants.first.restaurantName;
+    }
   }
 
   @override
@@ -51,9 +63,9 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
         padding: const EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            const Text(
-              "Add Tip",
-              style: TextStyle(
+            Text(
+              widget.tipModel == null ? "Add Tip" : "Edit Tip",
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 28,
               ),
@@ -106,7 +118,7 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
             ),
             const Spacer(),
             CustomAuthButton(
-                text: "ADD",
+                text: widget.tipModel == null ? "ADD" : "SAVE",
                 onPress: () {
                   print(selectedItem);
                   final tipModel = TipModel(
@@ -118,11 +130,20 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
                             (element) => element.restaurantName == selectedItem)
                         .id,
                     notes: notesController.text,
-                    id: const Uuid().v4(),
+                    id: widget.tipModel == null
+                        ? const Uuid().v4()
+                        : widget.tipModel!.id,
                   );
-                  ref
-                      .read(calendarEventControllerProvider.notifier)
-                      .addCalendarEvent(tipModel: tipModel);
+                  if (widget.tipModel == null) {
+                    ref
+                        .read(calendarEventControllerProvider.notifier)
+                        .addCalendarEvent(tipModel: tipModel);
+                  } else {
+                    updatedTip = tipModel;
+                    ref
+                        .read(calendarEventControllerProvider.notifier)
+                        .editCalendarEvent(tipModel: tipModel);
+                  }
                   Navigator.of(context).pop();
                 }),
             const SizedBox(height: 40),

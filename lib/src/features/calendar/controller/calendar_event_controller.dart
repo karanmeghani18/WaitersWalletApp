@@ -32,10 +32,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     final List<TipModel> tips = [...state.tips, tipModel];
     final List<CalendarEventData> events = [...state.calendarEvents, event];
 
-    String errorText = await _repository.addTipToFirebase(
-      tipModel,
-      tipModel.id,
-    );
+    String errorText = await _repository.addTipToFirebase(tipModel);
 
     if (errorText.isEmpty) {
       state = state.copyWith(
@@ -46,9 +43,37 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     } else {
       state = state.copyWith(
         status: CalendarEventStatus.addTipFailure,
-        tips: tips,
         message: errorText,
-        calendarEvents: events,
+      );
+    }
+  }
+
+  Future<void> editCalendarEvent({required TipModel tipModel}) async {
+    state = state.copyWith(status: CalendarEventStatus.editingTip);
+
+    final List<TipModel> tips = state.tips;
+    List<CalendarEventData> events = state.calendarEvents;
+    tips.removeWhere((element) => element.id == tipModel.id);
+    events.removeWhere((element) => element.event == tipModel.id);
+
+    final event = CalendarEventData(
+      date: tipModel.fullDateTime,
+      title: tipModel.tipAmount.toString(),
+      event: tipModel.id,
+    );
+
+    String errorText = await _repository.addTipToFirebase(tipModel);
+
+    if (errorText.isEmpty) {
+      state = state.copyWith(
+        status: CalendarEventStatus.editTipSuccess,
+        tips: [...tips, tipModel],
+        calendarEvents: [...events, event],
+      );
+    } else {
+      state = state.copyWith(
+        status: CalendarEventStatus.editTipFailure,
+        message: errorText,
       );
     }
   }
@@ -146,30 +171,36 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
   List<double> getWeekEarningsData(int subtract, int add) {
     DateTime now = DateTime.now();
     DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    startOfWeek = startOfWeek.subtract(Duration(days: subtract * 7)); // Subtract weeks
+    startOfWeek =
+        startOfWeek.subtract(Duration(days: subtract * 7)); // Subtract weeks
     startOfWeek = startOfWeek.add(Duration(days: add * 7)); // Add weeks
     DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
 
     List<double> tipAmounts = [];
 
-    for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(const Duration(days: 1))) {
+    for (DateTime date = startOfWeek;
+        date.isBefore(endOfWeek);
+        date = date.add(const Duration(days: 1))) {
       List<double> dailyTipAmounts = [];
 
       for (TipModel tip in state.tips) {
         DateTime datetime = tip.fullDateTime;
 
-        if (datetime.year == date.year && datetime.month == date.month && datetime.day == date.day) {
+        if (datetime.year == date.year &&
+            datetime.month == date.month &&
+            datetime.day == date.day) {
           dailyTipAmounts.add(tip.tipAmount);
         }
       }
 
-      double tipAmount = dailyTipAmounts.isNotEmpty ? dailyTipAmounts.reduce((a, b) => a + b) : 0.0;
+      double tipAmount = dailyTipAmounts.isNotEmpty
+          ? dailyTipAmounts.reduce((a, b) => a + b)
+          : 0.0;
       tipAmounts.add(tipAmount);
     }
 
     return tipAmounts;
   }
-
 
   List<double> getMonthEarningsData(DateTime targetDate) {
     Map<String, List<double>> tipAmountsByMonth = {};
@@ -201,5 +232,4 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
 
     return tipAmounts;
   }
-
 }

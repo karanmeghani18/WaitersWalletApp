@@ -11,7 +11,23 @@ class CalendarRepository {
   final CollectionReference _users =
       FirebaseFirestore.instance.collection('users');
 
-  Future<String> addTipToFirebase(TipModel tipModel, String tipId) async {
+  Future<String> addTipToFirebase(TipModel tipModel) async {
+    String errorText = "";
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    try {
+      await _users
+          .doc(currentUser!.email)
+          .collection("tips")
+          .doc(tipModel.id)
+          .set(tipModel.toJson());
+    } on FirebaseException catch (e) {
+      errorText = e.message.toString();
+    }
+
+    return errorText;
+  }
+
+  Future<String> editTipToFirebase(TipModel tipModel, String tipId) async {
     String errorText = "";
     final User? currentUser = FirebaseAuth.instance.currentUser;
     try {
