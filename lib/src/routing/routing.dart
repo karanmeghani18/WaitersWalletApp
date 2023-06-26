@@ -3,6 +3,7 @@ import 'package:waiters_wallet/src/features/restaurants/addrestaurant/Views/addr
 import 'package:waiters_wallet/src/features/authentication/authentication.dart';
 import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
 import 'package:waiters_wallet/src/features/onboarding/views/onboarding_screen.dart';
+import 'package:waiters_wallet/src/features/restaurants/manage_restaurant/views/manage_restaurant_screen.dart';
 
 import '../features/splash/splash.dart' show SplashScreen;
 
@@ -16,6 +17,7 @@ class Routing {
   static const String onBoardingScreen = '/onBoarding';
   static const String homeScreen = '/home';
   static const String addRestaurant = '/addRestaurant';
+  static const String manageRestaurant = '/manageRestaurant';
 
   // static const String homeScreen = '/';
 
@@ -68,6 +70,13 @@ class Routing {
           builder: (context) => const AddRestaurantScreen(),
           settings: const RouteSettings(
             name: addRestaurant,
+          ),
+        );
+      case manageRestaurant:
+        return MaterialPageRoute(
+          builder: (context) => const ManageRestaurantScreen(),
+          settings: const RouteSettings(
+            name: manageRestaurant,
           ),
         );
       default:
