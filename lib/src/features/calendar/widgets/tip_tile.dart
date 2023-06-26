@@ -10,6 +10,7 @@ class TipTile extends StatelessWidget {
     required this.tipAmount,
     required this.onDismiss,
     required this.confirmDismiss,
+    required this.onTap,
   });
 
   final String restaurantName;
@@ -17,6 +18,7 @@ class TipTile extends StatelessWidget {
   final double tipAmount;
   final VoidCallback onDismiss;
   final Future<bool> Function() confirmDismiss;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,68 +41,71 @@ class TipTile extends StatelessWidget {
           size: 40,
         ),
       ),
-      child: Container(
-        height: 60,
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: skinColorConst.withOpacity(0.7),
-                blurRadius: 0.6,
-                spreadRadius: 0.6,
-                offset: const Offset(1, 2),
-              ),
-            ]),
-        child: Row(
-          children: [
-            Flexible(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.location_on),
-                  Text(
-                    restaurantName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 60,
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: skinColorConst.withOpacity(0.7),
+                  blurRadius: 0.6,
+                  spreadRadius: 0.6,
+                  offset: const Offset(1, 2),
+                ),
+              ]),
+          child: Row(
+            children: [
+              Flexible(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.location_on),
+                    Text(
+                      restaurantName,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Flexible(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.hourglass_bottom_sharp),
-                  Text(
-                    "$hoursWorked Hours",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              Flexible(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.hourglass_bottom_sharp),
+                    Text(
+                      "$hoursWorked Hours",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Flexible(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.monetization_on_rounded),
-                  Text(
-                    "$tipAmount",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              Flexible(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.monetization_on_rounded),
+                    Text(
+                      "$tipAmount",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

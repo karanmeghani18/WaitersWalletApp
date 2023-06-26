@@ -64,6 +64,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       }
 
+      if (next.status == CalendarEventStatus.editTipSuccess) {
+        final event = next.calendarEvents.last;
+        print(event.event);
+        CalendarControllerProvider.of(context)
+            .controller
+            .removeWhere((element) => element.event == event.event);
+        CalendarControllerProvider.of(context).controller.add(event);
+
+        Fluttertoast.showToast(
+          msg: "Tip Updated!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: skinColorConst,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+      }
+
       if (next.status == CalendarEventStatus.fetchingEventsSuccess) {
         for (var event in next.calendarEvents) {
           CalendarControllerProvider.of(context).controller.add(event);
