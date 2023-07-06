@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
-import 'package:waiters_wallet/src/features/authentication/signup/controller/signup_controller.dart';
+import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/validators/validators.dart';
 import 'package:waiters_wallet/src/widgets/custom_error_dialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
@@ -29,7 +29,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   String nameErrorText = "";
 
   void signUserUp() async {
-    ref.read(signUpControllerProvider.notifier).signUp(
+    ref.read(authControllerProvider.notifier).signUp(
           fullName: nameController.text,
           email: emailController.text,
           password: passwordController.text,
@@ -54,15 +54,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(signUpControllerProvider, (previous, next) {
-      if (next.status == SignUpStatus.signingUpUserSuccess) {
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.status == AuthStatus.signingUpUserSuccess) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) {
           return const HomeScreen();
         }), (route) => false);
       }
 
-      if (next.status == SignUpStatus.signingUpUserFailure) {
+      if (next.status == AuthStatus.signingUpUserFailure) {
         showCupertinoDialog(
           context: context,
           builder: (context) {
@@ -77,8 +77,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     });
     return Scaffold(
       body: LoadingOverlay(
-        isLoading: ref.watch(signUpControllerProvider).status ==
-            SignUpStatus.signingUpUser,
+        isLoading: ref.watch(authControllerProvider).status ==
+            AuthStatus.signingUpUser,
         opacity: 0.9,
         progressIndicator: Lottie.asset(
           "assets/lottie/loading_animation.json",
