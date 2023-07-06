@@ -95,7 +95,7 @@ class TipTile extends StatelessWidget {
                   children: [
                     const Icon(Icons.monetization_on_rounded),
                     Text(
-                      "$tipAmount",
+                      tipAmount.toStringAsFixed(2),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

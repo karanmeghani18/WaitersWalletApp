@@ -25,7 +25,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
 
     final event = CalendarEventData(
       date: tipModel.fullDateTime,
-      title: tipModel.tipAmount.toString(),
+      title: tipModel.takeHome.toStringAsFixed(2),
       event: tipModel.id,
     );
 
@@ -58,7 +58,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
 
     final event = CalendarEventData(
       date: tipModel.fullDateTime,
-      title: tipModel.tipAmount.toString(),
+      title: tipModel.takeHome.toStringAsFixed(2),
       event: tipModel.id,
     );
 
@@ -87,7 +87,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
       for (TipModel tipModel in tipsList) {
         final event = CalendarEventData(
           date: tipModel.fullDateTime,
-          title: tipModel.tipAmount.toString(),
+          title: tipModel.takeHome.toStringAsFixed(2),
           event: tipModel.id,
         );
         eventsList.add(event);
@@ -112,6 +112,28 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
       tips: [],
       status: CalendarEventStatus.logoutDeleteEvents,
     );
+  }
+
+  double calculateMonthlyTakeHome(DateTime currentMonth) {
+    double totalTips = 0.0;
+    for (TipModel tip in state.tips) {
+      if (tip.fullDateTime.month == currentMonth.month &&
+          tip.fullDateTime.year == currentMonth.year) {
+        totalTips += tip.takeHome;
+      }
+    }
+    return double.parse(totalTips.toStringAsFixed(2));
+  }
+
+  double calculateMonthlyHours(DateTime currentMonth) {
+    double totalHours = 0.0;
+    for (TipModel tip in state.tips) {
+      if (tip.fullDateTime.month == currentMonth.month &&
+          tip.fullDateTime.year == currentMonth.year) {
+        totalHours += tip.hoursWorked;
+      }
+    }
+    return double.parse(totalHours.toStringAsFixed(2));
   }
 
   Future<void> deleteTip(String tipId) async {

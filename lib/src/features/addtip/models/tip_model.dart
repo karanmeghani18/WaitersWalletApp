@@ -5,6 +5,10 @@ class TipModel {
   final double hoursWorked;
   final String notes;
   final String restaurantId;
+  final double salesAmount;
+  final double takeHome;
+  final double barTipOutAmount;
+  final double bohTipOutAmount;
 
   TipModel({
     required this.fullDateTime,
@@ -13,6 +17,10 @@ class TipModel {
     required this.restaurantId,
     this.notes = "",
     required this.id,
+    required this.salesAmount,
+    this.barTipOutAmount = 0.0,
+    this.takeHome = 0.0,
+    this.bohTipOutAmount = 0.0,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,6 +30,10 @@ class TipModel {
       "hoursWorked": hoursWorked,
       "notes": notes,
       "restaurantId": restaurantId,
+      "salesAmount": salesAmount,
+      "takeHome": takeHome,
+      "barTipOutAmount": barTipOutAmount,
+      "bohTipOutAmount": bohTipOutAmount,
     };
   }
 
@@ -33,6 +45,10 @@ class TipModel {
       restaurantId: json["restaurantId"],
       notes: json["notes"],
       id: id,
+      salesAmount: json["salesAmount"],
+      takeHome: json["takeHome"],
+      barTipOutAmount: json["barTipOutAmount"],
+      bohTipOutAmount: json["bohTipOutAmount"],
     );
   }
 

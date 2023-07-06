@@ -28,12 +28,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     CalendarScreen(),
     EarningsScreen(),
     GoalsScreen(),
-    Center(
-      child: Text(
-        'Index 3: Schedule',
-        style: optionStyle,
-      ),
-    ),
     AccountsScreen(),
   ];
 
@@ -114,10 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: Icon(Icons.area_chart),
             label: 'Goals',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
-            label: 'Schedule',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Account',
