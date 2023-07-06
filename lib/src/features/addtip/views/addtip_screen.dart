@@ -50,7 +50,8 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
           .firstWhere((element) => element.id == widget.tipModel!.restaurantId)
           .restaurantName;
     } else {
-      selectedItem = restaurants.first.restaurantName;
+      selectedItem =
+          restaurants.isEmpty ? "" : restaurants.first.restaurantName;
     }
   }
 
@@ -88,34 +89,36 @@ class _AddTipSheetState extends ConsumerState<AddTipSheet> {
               controller: notesController,
               errorText: "",
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: DropdownButtonFormField<String>(
-                padding: EdgeInsets.zero,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      width: 3,
-                      color: skinColorConst,
+            restaurants.isEmpty
+                ? SizedBox()
+                : SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: DropdownButtonFormField<String>(
+                      padding: EdgeInsets.zero,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            width: 3,
+                            color: skinColorConst,
+                          ),
+                        ),
+                      ),
+                      value: selectedItem,
+                      items: restaurants
+                          .map((e) => DropdownMenuItem<String>(
+                                value: e.restaurantName,
+                                child: Text(e.restaurantName),
+                              ))
+                          .toList(),
+                      onChanged: (selected) => setState(() {
+                        selectedItem = selected;
+                      }),
                     ),
                   ),
-                ),
-                value: selectedItem,
-                items: restaurants
-                    .map((e) => DropdownMenuItem<String>(
-                          value: e.restaurantName,
-                          child: Text(e.restaurantName),
-                        ))
-                    .toList(),
-                onChanged: (selected) => setState(() {
-                  selectedItem = selected;
-                }),
-              ),
-            ),
             const Spacer(),
             CustomAuthButton(
                 text: widget.tipModel == null ? "ADD" : "SAVE",

@@ -44,6 +44,6 @@ class AddRestaurantController extends StateNotifier<AddRestaurantState> {
   }
 
   List<RestaurantModel> getRestaurants() {
-    return _authRepo.currentUser!.restaurants;
+    return _authRepo.currentUser?.restaurants ?? [];
   }
 }

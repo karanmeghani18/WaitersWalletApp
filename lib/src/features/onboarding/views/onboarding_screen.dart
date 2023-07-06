@@ -1,20 +1,23 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/onboarding/models/OnboardingItemModel.dart';
 import 'package:waiters_wallet/src/features/onboarding/widgets/onboarding_pageview_item.dart';
 
 import '../../../routing/routing.dart';
+import '../../calendar/controller/calendar_event_controller.dart';
+import '../../home/views/home_screen.dart';
 import '../widgets/widgets.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
 
   //this local variable will be changed
@@ -59,6 +62,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.status == AuthStatus.gSignInSuccess) {
+        ref
+            .read(calendarEventControllerProvider.notifier)
+            .fetchTipsFromServer();
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) {
+          return const HomeScreen();
+        }), (route) => false);
+      }
+    });
     return Scaffold(
       body: Column(
         children: [
@@ -76,15 +90,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             logoSvg: "assets/icons/google.svg",
             methodName: "Google",
             onPress: () {
-              Fluttertoast.showToast(
-                msg: "Google Signup not implemented",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
+              ref.read(authControllerProvider.notifier).logInWithGoogle();
+              // Fluttertoast.showToast(
+              //   msg: "Google Signup not implemented",
+              //   toastLength: Toast.LENGTH_SHORT,
+              //   gravity: ToastGravity.BOTTOM,
+              //   timeInSecForIosWeb: 1,
+              //   backgroundColor: Colors.red,
+              //   textColor: Colors.white,
+              //   fontSize: 16.0,
+              // );
             },
           ),
           const SizedBox(height: 18),

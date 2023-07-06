@@ -2,7 +2,7 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:waiters_wallet/src/features/authentication/login/controller/login_controller.dart';
+import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/widgets/widgets.dart';
 
@@ -37,15 +37,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(loginControllerProvider, (previous, next) {
-      if (next.status == LoginStatus.loginUserSuccess) {
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.status == AuthStatus.loginUserSuccess) {
         restaurants = ref
             .watch(addRestaurantControllerProvider.notifier)
             .getRestaurants();
       }
     });
-    restaurants =
-        ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
+    restaurants = ref.watch(addRestaurantControllerProvider.notifier).getRestaurants();
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

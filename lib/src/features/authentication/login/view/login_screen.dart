@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
-import 'package:waiters_wallet/src/features/authentication/login/controller/login_controller.dart';
+import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
 import 'package:waiters_wallet/src/validators/validators.dart';
@@ -29,7 +29,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String passwordErrorText = "";
 
   void signUserIn() async {
-    ref.read(loginControllerProvider.notifier).logIn(
+    ref.read(authControllerProvider.notifier).logIn(
           email: emailController.text,
           password: passwordController.text,
         );
@@ -50,8 +50,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(loginControllerProvider, (previous, next) async {
-      if (next.status == LoginStatus.loginUserSuccess) {
+    ref.listen(authControllerProvider, (previous, next) async {
+      if (next.status == AuthStatus.loginUserSuccess) {
         ref
             .read(calendarEventControllerProvider.notifier)
             .fetchTipsFromServer();
@@ -61,7 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         }), (route) => false);
       }
 
-      if (next.status == LoginStatus.loginUserFailure) {
+      if (next.status == AuthStatus.loginUserFailure) {
         showCupertinoDialog(
           context: context,
           builder: (context) {
@@ -79,7 +79,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: LoadingOverlay(
         isLoading:
-            ref.watch(loginControllerProvider).status == LoginStatus.loginUser,
+            ref.watch(authControllerProvider).status == AuthStatus.loginUser,
         opacity: 0.9,
         progressIndicator: Lottie.asset(
           "assets/lottie/loading_animation.json",
