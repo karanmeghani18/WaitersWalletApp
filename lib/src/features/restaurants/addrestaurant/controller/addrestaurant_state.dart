@@ -5,6 +5,9 @@ enum AddRestaurantStatus {
   addingRestaurant,
   addingRestaurantSuccess,
   addingRestaurantFailure,
+  deletingRestaurant,
+  deletingRestaurantSuccess,
+  deletingRestaurantFailure,
 }
 
 class AddRestaurantState extends Equatable {

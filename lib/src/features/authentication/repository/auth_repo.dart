@@ -104,6 +104,12 @@ class AuthenticationRepository {
     );
   }
 
+  void deleteRestaurant(String restaurantId) {
+    currentUser!.restaurants.removeWhere((e) => e.id == restaurantId);
+  }
+
+
+
   WalletUser getUser() {
     return currentUser!;
   }

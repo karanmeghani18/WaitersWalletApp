@@ -50,9 +50,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
           CustomAuthButton(text: "Edit Profile", onPress: () {}),
           const SizedBox(height: 12),
           CustomAuthButton(
-              text: "Add Restaurant",
+              text: "Manage Restaurant",
               onPress: () {
-                Navigator.of(context).pushNamed(Routing.addRestaurant);
+                Navigator.of(context).pushNamed(Routing.manageRestaurant);
               }),
           const SizedBox(height: 12),
           const Spacer(),

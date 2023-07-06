@@ -43,6 +43,23 @@ class AddRestaurantController extends StateNotifier<AddRestaurantState> {
     }
   }
 
+  Future<void> deleteRestaurant({
+    required String restaurantId,
+  }) async {
+    state = state.copyWith(status: AddRestaurantStatus.deletingRestaurant);
+    try {
+      await _repository.deleteRestaurant(restaurantId);
+      _authRepo.deleteRestaurant(restaurantId);
+      state =
+          state.copyWith(status: AddRestaurantStatus.deletingRestaurantSuccess);
+    } catch (e) {
+      state = state.copyWith(
+        status: AddRestaurantStatus.deletingRestaurantFailure,
+        message: e.toString(),
+      );
+    }
+  }
+
   List<RestaurantModel> getRestaurants() {
     return _authRepo.currentUser?.restaurants ?? [];
   }

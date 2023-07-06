@@ -28,6 +28,15 @@ class RestaurantRepository {
     return errorText;
   }
 
+  Future<void> deleteRestaurant(String restaurantId) async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    await _users
+        .doc(currentUser!.email)
+        .collection("restaurants")
+        .doc(restaurantId)
+        .delete();
+  }
+
   Future<List<RestaurantModel>> fetchRestaurant() async {
     User? user = FirebaseAuth.instance.currentUser;
     List<RestaurantModel> restaurants = [];
