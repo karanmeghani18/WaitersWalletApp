@@ -80,7 +80,7 @@ class TipTile extends StatelessWidget {
                   children: [
                     const Icon(Icons.hourglass_bottom_sharp),
                     Text(
-                      "$hoursWorked Hours",
+                      "$hoursWorked Hrs",
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

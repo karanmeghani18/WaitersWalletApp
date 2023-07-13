@@ -53,7 +53,7 @@ class EarningsTile extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
               Text(
-                "\$${takeHome != 0 ? takeHome / hours : 0.0}",
+                "\$${takeHome != 0 ? (takeHome / hours).toStringAsFixed(2) : 0.0}",
                 style: const TextStyle(fontSize: 18),
               ),
             ],

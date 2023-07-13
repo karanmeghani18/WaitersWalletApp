@@ -24,14 +24,6 @@ class RestaurantTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: UniqueKey(),
-      confirmDismiss: (direction) async {
-        return confirmDismiss();
-      },
-      onDismissed: (direction) {
-        if (direction == DismissDirection.endToStart) {
-          onDismiss();
-        }
-      },
       direction: DismissDirection.endToStart,
       background: const Align(
         alignment: Alignment.centerRight,

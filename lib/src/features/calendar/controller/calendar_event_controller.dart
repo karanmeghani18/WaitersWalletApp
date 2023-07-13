@@ -157,38 +157,72 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     }
   }
 
-  // List<double> getWeekEarningsData(int subtract, int add) {
-  //   DateTime now = DateTime.now();
-  //   DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-  //   startOfWeek = startOfWeek.subtract(Duration(days: subtract));
-  //   startOfWeek = startOfWeek.add(Duration(days: add));
-  //   DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
-  //
-  //   List<double> tipAmounts = [];
-  //
-  //   for (DateTime date = startOfWeek;
-  //       date.isBefore(endOfWeek);
-  //       date = date.add(const Duration(days: 1))) {
-  //     List<double> dailyTipAmounts = [];
-  //
-  //     for (TipModel tip in state.tips) {
-  //       DateTime datetime = tip.fullDateTime;
-  //
-  //       if (datetime.year == date.year &&
-  //           datetime.month == date.month &&
-  //           datetime.day == date.day) {
-  //         dailyTipAmounts.add(tip.tipAmount);
-  //       }
-  //     }
-  //
-  //     double tipAmount = dailyTipAmounts.isNotEmpty
-  //         ? dailyTipAmounts.reduce((a, b) => a + b)
-  //         : 0.0;
-  //     tipAmounts.add(tipAmount);
-  //   }
-  //
-  //   return tipAmounts;
-  // }
+  Map<String, Map<String, double>> getWeeklyRestaurantTotals(int subtract, int add) {
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    startOfWeek =
+        startOfWeek.subtract(Duration(days: subtract * 7)); // Subtract weeks
+    startOfWeek = startOfWeek.add(Duration(days: add * 7)); // Add weeks
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+    Map<String, Map<String, double>> restaurantTotals = {};
+
+    for (TipModel tip in state.tips) {
+      DateTime datetime = tip.fullDateTime;
+
+      if (datetime.isAfter(startOfWeek) && datetime.isBefore(endOfWeek)) {
+        Map<String, double> restaurantTotal = restaurantTotals[tip.restaurantId] ?? {
+          'takeHomeTotal': 0.0,
+          'hoursWorkedTotal': 0.0,
+        };
+
+        restaurantTotal['takeHomeTotal'] =
+            (restaurantTotal['takeHomeTotal'] ?? 0.0) + (tip.takeHome);
+        restaurantTotal['hoursWorkedTotal'] =
+            (restaurantTotal['hoursWorkedTotal'] ?? 0.0) + (tip.hoursWorked);
+
+        restaurantTotals[tip.restaurantId] = restaurantTotal;
+      }
+    }
+
+    return restaurantTotals;
+  }
+
+  Map<String, Map<String, Map<String, double>>> getRestaurantTotalsByMonth(int year) {
+    Map<String, Map<String, Map<String, double>>> restaurantTotalsByMonth = {};
+
+    for (TipModel tip in state.tips) {
+      DateTime datetime = tip.fullDateTime;
+      double takeHome = tip.takeHome;
+      double hoursWorked = tip.hoursWorked;
+      String monthYear = '${datetime.year}-${datetime.month}';
+
+      if (datetime.year == year) {
+        if (!restaurantTotalsByMonth.containsKey(monthYear)) {
+          restaurantTotalsByMonth[monthYear] = {};
+        }
+
+        String restaurantId = tip.restaurantId;
+
+        if (!restaurantTotalsByMonth[monthYear]!.containsKey(restaurantId)) {
+          restaurantTotalsByMonth[monthYear]![restaurantId] = {
+            'takeHomeTotal': 0.0,
+            'hoursWorkedTotal': 0.0,
+          };
+        }
+
+        restaurantTotalsByMonth[monthYear]![restaurantId]!['takeHomeTotal'] =
+            (restaurantTotalsByMonth[monthYear]![restaurantId]!['takeHomeTotal'] ?? 0.0) + double.parse(takeHome.toStringAsFixed(2));
+        restaurantTotalsByMonth[monthYear]![restaurantId]!['hoursWorkedTotal'] =
+            (restaurantTotalsByMonth[monthYear]![restaurantId]!['hoursWorkedTotal'] ?? 0.0) + double.parse(hoursWorked.toStringAsFixed(2));
+      }
+    }
+
+    return restaurantTotalsByMonth;
+  }
+
+
+
 
   List<double> getWeekEarningsData(int subtract, int add) {
     DateTime now = DateTime.now();
@@ -211,7 +245,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
         if (datetime.year == date.year &&
             datetime.month == date.month &&
             datetime.day == date.day) {
-          dailyTipAmounts.add(tip.tipAmount);
+          dailyTipAmounts.add(tip.takeHome);
         }
       }
 
@@ -229,7 +263,7 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
 
     for (TipModel tip in state.tips) {
       DateTime datetime = tip.fullDateTime;
-      double tipAmount = tip.tipAmount;
+      double tipAmount = tip.takeHome;
 
       String monthYear = '${datetime.year}-${datetime.month}';
 
