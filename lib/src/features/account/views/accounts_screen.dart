@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/routing/routing.dart';
@@ -45,12 +46,15 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
               ),
             ),
           ),
-          CustomAuthButton(text: "Change Password", onPress: () {}),
+          CustomAuthButton(text: "Change Password", onPress: () async {
+            var errorText = await ref.read(authRepoProvider).sendPasswordResetEmail(user.email);
+            Fluttertoast.showToast(msg: errorText);
+          }),
           const SizedBox(height: 12),
           CustomAuthButton(text: "Edit Profile", onPress: () {}),
           const SizedBox(height: 12),
           CustomAuthButton(
-              text: "Manage Restaurant",
+              text: "Manage Restaurants",
               onPress: () {
                 Navigator.of(context).pushNamed(Routing.manageRestaurant);
               }),

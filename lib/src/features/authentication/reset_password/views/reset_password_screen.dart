@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
   ResetPasswordScreen({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final emailController = TextEditingController();
 
   @override
@@ -47,7 +56,11 @@ class ResetPasswordScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             const Spacer(),
-            CustomAuthButton(text: "REQUEST RESET CODE", onPress: () {}),
+            CustomAuthButton(text: "REQUEST RESET CODE", onPress: (
+                ) async {
+              var errorText = await ref.read(authRepoProvider).sendPasswordResetEmail(emailController.text);
+              Fluttertoast.showToast(msg: errorText);
+            }),
             const SizedBox(height: 50),
           ],
         ),

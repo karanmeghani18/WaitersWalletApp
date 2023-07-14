@@ -1,102 +1,98 @@
+import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:waiters_wallet/src/features/goals/widgets/goals_chart.dart';
+import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:waiters_wallet/src/features/goals/widgets/goals_charts.dart';
 
-import '../../calendar/controller/calendar_event_controller.dart';
+import '../../addtip/models/tip_model.dart';
 
-class GoalsScreen extends ConsumerStatefulWidget {
-  const GoalsScreen({Key? key}) : super(key: key);
+class GoalsScreen extends StatefulWidget {
+  const GoalsScreen({super.key});
 
   @override
-  ConsumerState<GoalsScreen> createState() => _GoalsScreenState();
+  State<GoalsScreen> createState() => _GoalsScreenState();
 }
 
-class _GoalsScreenState extends ConsumerState<GoalsScreen> {
-  List<double> weekData = [];
-
-  DateTime selectedWeekDate = DateTime.now();
-  int weekBackArrowTap = 0;
-  int weekFrontArrowTap = 0;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    weekData = ref
-        .watch(calendarEventControllerProvider.notifier)
-        .getWeekEarningsData(weekBackArrowTap, weekFrontArrowTap);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    weekData = ref
-        .read(calendarEventControllerProvider.notifier)
-        .getWeekEarningsData(weekBackArrowTap, weekFrontArrowTap);
-  }
-
-  String getWeekOfMonth(DateTime date) {
-    int firstDayOfMonth = DateTime(date.year, date.month, 1).weekday;
-    int weekOfMonth = ((date.day + firstDayOfMonth - 2) / 7).ceil();
-    return weekOfMonth.toString();
-  }
-
+class _GoalsScreenState extends State<GoalsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(left: 14, bottom: 20),
+    List<TipModel> dailyData =
+        generateRandomData(30); // Generate 30 random daily data
+    List<TipModel> weeklyData =
+        generateRandomData(30); // Generate 7 random weekly data
+    List<TipModel> monthlyData =
+        generateRandomData(30); // Generate 12 random monthly data
+    List<TipModel> yearlyData =
+        generateRandomData(30); // Generate 3 random yearly data
+
+    return DefaultTabController(
+      length: 4, // Number of tabs
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.add, size: 28)),
+          ],
+          title: const Align(
+            alignment: Alignment.centerLeft,
             child: Text(
-              "Goals",
-              textAlign: TextAlign.start,
+              'Goals',
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
+          bottom: TabBar(
+            indicatorColor: skinColorConst,
+            labelColor: skinColorConst,
+            unselectedLabelColor: Colors.black,
+            labelStyle: const TextStyle(fontSize: 14),
+            tabs: const [
+              Tab(text: 'Daily'),
+              Tab(text: 'Weekly'),
+              Tab(text: 'Monthly'),
+              Tab(text: 'Yearly'),
+            ],
+          ),
         ),
-        Row(
+        body: TabBarView(
           children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  weekBackArrowTap++;
-                  selectedWeekDate =
-                      selectedWeekDate.subtract(const Duration(days: 7));
-                  weekData = ref
-                      .watch(calendarEventControllerProvider.notifier)
-                      .getWeekEarningsData(weekBackArrowTap, weekFrontArrowTap);
-                });
-              },
-              icon: const Icon(Icons.arrow_circle_left_outlined),
-              padding: EdgeInsets.zero,
-            ),
-            Spacer(),
-            Text(
-              "${selectedWeekDate.month}-${getWeekOfMonth(selectedWeekDate)}",
-            ),
-            Spacer(),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  weekFrontArrowTap++;
-                  selectedWeekDate =
-                      selectedWeekDate.add(const Duration(days: 7));
-                  weekData = ref
-                      .watch(calendarEventControllerProvider.notifier)
-                      .getWeekEarningsData(weekBackArrowTap, weekFrontArrowTap);
-                });
-              },
-              icon: const Icon(Icons.arrow_circle_right_outlined),
-              padding: EdgeInsets.zero,
-            ),
+            GoalsPieChart(title: 'Daily', tipData: dailyData), // Daily
+            GoalsPieChart(title: 'Weekly', tipData: weeklyData), // Weekly
+            GoalsPieChart(title: 'Monthly', tipData: monthlyData), // Monthly
+            GoalsPieChart(title: 'Yearly', tipData: yearlyData), // Yearly
           ],
         ),
-        GoalsChart(),
-      ],
+      ),
     );
+  }
+
+  List<TipModel> generateRandomData(int count) {
+    final faker = Faker.instance;
+
+    return List.generate(count, (index) {
+      final fullDateTime = faker.datatype.dateTime(min: 2022, max: 2023);
+      final tipAmount = faker.datatype.float(min: 50, max: 200);
+      final hoursWorked = faker.datatype.float(min: 2, max: 8);
+      final restaurantId = faker.datatype.uuid();
+      final notes = faker.lorem.sentence();
+      final id = faker.datatype.uuid();
+      final salesAmount = faker.datatype.float(min: 1000, max: 3500);
+      final takeHome = faker.datatype.float(min: 60, max: 300);
+      final barTipOutAmount = faker.datatype.float(min: 10, max: 90);
+      final bohTipOutAmount = faker.datatype.float(min: 10, max: 90);
+
+      return TipModel(
+        fullDateTime: fullDateTime,
+        tipAmount: tipAmount,
+        hoursWorked: hoursWorked,
+        restaurantId: restaurantId,
+        notes: notes,
+        id: id,
+        salesAmount: salesAmount,
+        takeHome: takeHome,
+        barTipOutAmount: barTipOutAmount,
+        bohTipOutAmount: bohTipOutAmount,
+      );
+    });
   }
 }

@@ -129,4 +129,14 @@ class AuthenticationRepository {
   logoutGUser(){
 
   }
+  Future<String> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return ('Password reset email sent');
+    } catch (e) {
+      return ('Error sending password reset email: $e');
+    }
+  }
+
+
 }
