@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/restaurants/addrestaurant/repository/addrestaurant_repo.dart';
+import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
 
 import '../../../routing/routing.dart';
 import '../../addtip/models/restaurant_model.dart';
@@ -31,6 +32,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           await ref
               .read(calendarEventControllerProvider.notifier)
               .fetchTipsFromServer();
+          await ref
+              .read(scheduleControllerProvider.notifier)
+              .fetchScheduleFromServer();
           await ref
               .read(addRestaurantRepoProvider)
               .fetchRestaurant()
@@ -62,6 +66,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         }
       }
     });
+    ref.listen(scheduleControllerProvider, (previous, next) {});
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

@@ -7,6 +7,8 @@ import 'package:waiters_wallet/src/features/account/views/accounts_screen.dart';
 import 'package:waiters_wallet/src/features/calendar/views/calendar_screen.dart';
 import 'package:waiters_wallet/src/features/earnings/views/earnings_screen.dart';
 import 'package:waiters_wallet/src/features/goals/views/goals_screen.dart';
+import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
+import 'package:waiters_wallet/src/features/schedule/view/schedule_screen.dart';
 import '../../calendar/controller/calendar_event_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -19,15 +21,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const TextStyle optionStyle = TextStyle(
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
-  );
-
   static const List<Widget> _widgetOptions = <Widget>[
     CalendarScreen(),
     EarningsScreen(),
     GoalsScreen(),
+    ScheduleScreen(),
     AccountsScreen(),
   ];
 
@@ -92,6 +90,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     });
 
+    ref.listen(scheduleControllerProvider, (previous, next) {
+      print(previous?.status);
+    });
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -108,7 +109,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: Icon(Icons.area_chart),
             label: 'Goals',
           ),
-
+          BottomNavigationBarItem(
+            icon: Icon(Icons.schedule),
+            label: 'Schedule',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Account',

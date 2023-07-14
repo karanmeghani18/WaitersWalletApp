@@ -13,6 +13,7 @@ import 'package:waiters_wallet/src/widgets/custom_error_dialog.dart';
 import 'package:waiters_wallet/src/widgets/widgets.dart';
 
 import '../../../../routing/routing.dart';
+import '../../../schedule/controller/schedule_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -55,6 +56,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ref
             .read(calendarEventControllerProvider.notifier)
             .fetchTipsFromServer();
+        ref
+            .read(scheduleControllerProvider.notifier)
+            .fetchScheduleFromServer();
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) {
           return const HomeScreen();
@@ -76,6 +80,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     ref.listen(calendarEventControllerProvider, (previous, next) {});
+    ref.listen(scheduleControllerProvider, (previous, next) { });
     return Scaffold(
       body: LoadingOverlay(
         isLoading:

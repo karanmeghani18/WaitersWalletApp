@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/onboarding/models/OnboardingItemModel.dart';
 import 'package:waiters_wallet/src/features/onboarding/widgets/onboarding_pageview_item.dart';
+import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
 
 import '../../../routing/routing.dart';
 import '../../calendar/controller/calendar_event_controller.dart';
@@ -67,6 +68,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ref
             .read(calendarEventControllerProvider.notifier)
             .fetchTipsFromServer();
+        ref
+            .read(scheduleControllerProvider.notifier)
+            .fetchScheduleFromServer();
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) {
           return const HomeScreen();

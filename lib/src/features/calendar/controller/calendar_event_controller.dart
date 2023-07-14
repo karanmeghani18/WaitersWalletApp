@@ -89,6 +89,8 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
           date: tipModel.fullDateTime,
           title: tipModel.takeHome.toStringAsFixed(2),
           event: tipModel.id,
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(Duration(hours: 2)),
         );
         eventsList.add(event);
       }

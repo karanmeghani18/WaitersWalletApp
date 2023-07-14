@@ -49,6 +49,7 @@ dependencies:
   uuid: ^3.0.7
   intl: ^0.18.1
   google_sign_in: ^6.1.4
+  cupertino_date_textbox: ^1.0.3
 
 dev_dependencies:
   flutter_test:
