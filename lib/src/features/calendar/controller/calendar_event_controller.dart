@@ -108,6 +108,17 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     }
   }
 
+  TipModel? getEarningsOfDay(DateTime dateTime) {
+    final hasTipsForDay = state.tips.indexWhere(
+      (e) => e.fullDateTime.withoutTime == dateTime.withoutTime,
+    );
+    if (hasTipsForDay == -1) {
+      return null;
+    } else {
+      return state.tips[hasTipsForDay];
+    }
+  }
+
   void removeAllEvents() {
     state = state.copyWith(
       calendarEvents: [],
@@ -159,7 +170,8 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     }
   }
 
-  Map<String, Map<String, double>> getWeeklyRestaurantTotals(int subtract, int add) {
+  Map<String, Map<String, double>> getWeeklyRestaurantTotals(
+      int subtract, int add) {
     DateTime now = DateTime.now();
     DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     startOfWeek =
@@ -173,10 +185,12 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
       DateTime datetime = tip.fullDateTime;
 
       if (datetime.isAfter(startOfWeek) && datetime.isBefore(endOfWeek)) {
-        Map<String, double> restaurantTotal = restaurantTotals[tip.restaurantId] ?? {
-          'takeHomeTotal': 0.0,
-          'hoursWorkedTotal': 0.0,
-        };
+        Map<String, double> restaurantTotal =
+            restaurantTotals[tip.restaurantId] ??
+                {
+                  'takeHomeTotal': 0.0,
+                  'hoursWorkedTotal': 0.0,
+                };
 
         restaurantTotal['takeHomeTotal'] =
             (restaurantTotal['takeHomeTotal'] ?? 0.0) + (tip.takeHome);
@@ -190,7 +204,8 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     return restaurantTotals;
   }
 
-  Map<String, Map<String, Map<String, double>>> getRestaurantTotalsByMonth(int year) {
+  Map<String, Map<String, Map<String, double>>> getRestaurantTotalsByMonth(
+      int year) {
     Map<String, Map<String, Map<String, double>>> restaurantTotalsByMonth = {};
 
     for (TipModel tip in state.tips) {
@@ -214,17 +229,20 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
         }
 
         restaurantTotalsByMonth[monthYear]![restaurantId]!['takeHomeTotal'] =
-            (restaurantTotalsByMonth[monthYear]![restaurantId]!['takeHomeTotal'] ?? 0.0) + double.parse(takeHome.toStringAsFixed(2));
+            (restaurantTotalsByMonth[monthYear]![restaurantId]![
+                        'takeHomeTotal'] ??
+                    0.0) +
+                double.parse(takeHome.toStringAsFixed(2));
         restaurantTotalsByMonth[monthYear]![restaurantId]!['hoursWorkedTotal'] =
-            (restaurantTotalsByMonth[monthYear]![restaurantId]!['hoursWorkedTotal'] ?? 0.0) + double.parse(hoursWorked.toStringAsFixed(2));
+            (restaurantTotalsByMonth[monthYear]![restaurantId]![
+                        'hoursWorkedTotal'] ??
+                    0.0) +
+                double.parse(hoursWorked.toStringAsFixed(2));
       }
     }
 
     return restaurantTotalsByMonth;
   }
-
-
-
 
   List<double> getWeekEarningsData(int subtract, int add) {
     DateTime now = DateTime.now();
