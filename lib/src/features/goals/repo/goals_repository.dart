@@ -14,8 +14,7 @@ class GoalsRepo {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     await _users
         .doc(currentUser!.email)
-        .collection("goals")
-        .add(goals.toJson());
+        .update(goals.toJson());
   }
 
   // Future<void> setGoalsToFirebase(GoalsModel goals) async {

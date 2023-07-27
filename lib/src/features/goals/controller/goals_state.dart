@@ -13,17 +13,17 @@ enum GoalsStatus {
 class GoalsState extends Equatable {
   const GoalsState({
     this.status = GoalsStatus.initial,
-    this.goals = const [],
+    this.goals,
     this.message = "",
   });
 
   final GoalsStatus status;
-  final List goals;
+  final GoalsModel? goals;
   final String message;
 
   GoalsState copyWith({
     GoalsStatus? status,
-    List? goals,
+    GoalsModel? goals,
     String? message,
   }) {
     return GoalsState(
