@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:waiters_wallet/src/features/addtip/models/restaurant_model.dart';
 import 'package:waiters_wallet/src/features/authentication/models/wallet_user.dart';
+import 'package:waiters_wallet/src/features/goals/models/goals_model.dart';
 
 final authRepoProvider = Provider((_) => AuthenticationRepository());
 
@@ -83,14 +84,15 @@ class AuthenticationRepository {
           ? userDoc
               .get('restaurants')
               .entries
-              .map((e) => RestaurantModel(
-                    restaurantName: e["name"],
-                    barTipOut: e["bar_tip_out"],
-                    bohTipOut: e["boh_tip_out"],
-                    id: e["id"],
+              .map((e) => RestaurantModel.fromJson(
+                    e,
+                    e['id'],
                   ))
               .toList()
           : [],
+      goals: GoalsModel.fromJson(
+        userDoc.data() as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -108,8 +110,6 @@ class AuthenticationRepository {
     currentUser!.restaurants.removeWhere((e) => e.id == restaurantId);
   }
 
-
-
   WalletUser getUser() {
     return currentUser!;
   }
@@ -126,9 +126,8 @@ class AuthenticationRepository {
     return result.additionalUserInfo!.isNewUser;
   }
 
-  logoutGUser(){
+  logoutGUser() {}
 
-  }
   Future<String> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -137,6 +136,4 @@ class AuthenticationRepository {
       return ('Error sending password reset email: $e');
     }
   }
-
-
 }

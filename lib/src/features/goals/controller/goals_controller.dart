@@ -44,15 +44,7 @@ class GoalsController extends StateNotifier<GoalsState> {
     }
   }
 
-  Future<void> fetchGoalsFromServer() async {
-    state = state.copyWith(status: GoalsStatus.fetchingGoals);
-    try {
-      state = state.copyWith(status: GoalsStatus.fetchingGoalsSuccess);
-    } on Exception catch (error) {
-      state = state.copyWith(
-        status: GoalsStatus.fetchingGoalsFailure,
-        message: error.toString(),
-      );
-    }
+  void setGoalsFromServer(GoalsModel goalsModel) async {
+    state = state.copyWith(goals: goalsModel);
   }
 }

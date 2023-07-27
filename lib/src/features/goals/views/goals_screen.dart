@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:waiters_wallet/src/features/authentication/models/wallet_user.dart';
+import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
+import 'package:waiters_wallet/src/features/goals/controller/goals_controller.dart';
 import 'package:waiters_wallet/src/features/goals/views/add_goals_screen.dart';
 import 'package:waiters_wallet/src/features/goals/widgets/goal_tracker_widget.dart';
 
-class GoalsScreen extends StatefulWidget {
+class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});
 
   @override
-  State<GoalsScreen> createState() => _GoalsScreenState();
+  ConsumerState<GoalsScreen> createState() => _GoalsScreenState();
 }
 
-class _GoalsScreenState extends State<GoalsScreen> {
+class _GoalsScreenState extends ConsumerState<GoalsScreen> {
+  late WalletUser user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = ref.read(authRepoProvider).getUser();
+    if (user.goals != null) {
+      print(user.goals?.hoursGoal);
+      ref
+          .read(goalsControllerProvider.notifier)
+          .setGoalsFromServer(user.goals!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(goalsControllerProvider, (previous, next) {});
     return DefaultTabController(
       length: 4,
       child: Scaffold(

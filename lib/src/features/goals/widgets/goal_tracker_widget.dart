@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/goals/controller/goals_controller.dart';
+import 'package:waiters_wallet/src/features/goals/models/goals_model.dart';
 import 'package:waiters_wallet/src/features/goals/widgets/daily_date_selector.dart';
 import 'package:waiters_wallet/src/features/goals/widgets/goal_card.dart';
 import 'package:waiters_wallet/src/features/goals/widgets/monthly_date_selector.dart';
@@ -9,7 +9,6 @@ import 'package:waiters_wallet/src/features/goals/widgets/yearly_date_selector.d
 import 'package:waiters_wallet/src/widgets/week_dates_selector.dart';
 
 import '../../../utils/utils.dart';
-import '../../addtip/models/tip_model.dart';
 
 class GoalTracker extends ConsumerStatefulWidget {
   const GoalTracker({
@@ -38,6 +37,56 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     });
   }
 
+  double getTakeHomeData() {
+    final takeHomeGoal = ref.read(goalsControllerProvider).goals!.takeHomeGoal;
+    final goalType = ref.read(goalsControllerProvider).goals!.goalType;
+    switch (widget.tabIndex) {
+      case 0:
+        double result =
+            goalType == GoalType.weekly ? takeHomeGoal / 7 : takeHomeGoal / 30;
+        return double.parse(result.toStringAsFixed(2));
+      case 1:
+        double result =
+            goalType == GoalType.weekly ? takeHomeGoal : takeHomeGoal / 4;
+        return double.parse(result.toStringAsFixed(2));
+      case 2:
+        double result =
+            goalType == GoalType.weekly ? takeHomeGoal * 4 : takeHomeGoal;
+        return double.parse(result.toStringAsFixed(2));
+      case 3:
+        double result =
+            goalType == GoalType.weekly ? takeHomeGoal * 52 : takeHomeGoal * 12;
+        return double.parse(result.toStringAsFixed(2));
+      default:
+        return 0.0;
+    }
+  }
+
+  double getHoursData() {
+    final hoursGoal = ref.read(goalsControllerProvider).goals!.hoursGoal;
+    final goalType = ref.read(goalsControllerProvider).goals!.goalType;
+    switch (widget.tabIndex) {
+      case 0:
+        double result =
+            goalType == GoalType.weekly ? hoursGoal / 7 : hoursGoal / 30;
+        return double.parse(result.toStringAsFixed(2));
+      case 1:
+        double result = goalType == GoalType.weekly ? hoursGoal : hoursGoal / 4;
+        return double.parse(result.toStringAsFixed(2));
+      case 2:
+        double result = goalType == GoalType.weekly ? hoursGoal * 4 : hoursGoal;
+        return double.parse(result.toStringAsFixed(2));
+      case 3:
+        double result =
+            goalType == GoalType.weekly ? hoursGoal * 52 : hoursGoal * 12;
+        return double.parse(result.toStringAsFixed(2));
+      default:
+        return 0.0;
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final startDate = getFormattedDate(getWeekStartDate(selectedDate));
@@ -45,10 +94,6 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     final weekHeaderString = "$startDate - $endDate";
     final goals = ref.watch(goalsControllerProvider).goals;
     final goalsAvailable = goals != null;
-    TipModel? tipsOfTheDay = ref
-        .watch(calendarEventControllerProvider.notifier)
-        .getEarningsOfDay(selectedDate);
-
 
     return goalsAvailable
         ? SingleChildScrollView(
@@ -81,26 +126,19 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
                   ),
                 GoalCard(
                   title: "Take Home",
-                  goal: goals.takeHomeGoal,
-                  value: widget.tabIndex == 0
-                      ? tipsOfTheDay?.takeHome ?? 0.0
-                      : 0.0,
+                  goal: getTakeHomeData(),
+                  value: 0.0,
                 ),
                 GoalCard(
                   title: "Hours",
-                  goal: goals.hoursGoal,
-                  value: widget.tabIndex == 0
-                      ? tipsOfTheDay?.hoursWorked ?? 0.0
-                      : 0.0,
+                  goal: getHoursData(),
+                  value: 0.0,
                 ),
                 GoalCard(
                   title: "Average Hourly",
-                  goal: goals.averageHourlyGoal,
-                  value: widget.tabIndex == 0
-                      ? tipsOfTheDay != null
-                          ? tipsOfTheDay.takeHome / tipsOfTheDay.hoursWorked
-                          : 0.0
-                      : 0.0,
+                  goal: double.parse(
+                      (getTakeHomeData() / getHoursData()).toStringAsFixed(2)),
+                  value: 0.0,
                 ),
               ],
             ),
