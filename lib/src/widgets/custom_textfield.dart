@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.errorText,
     this.kbType = TextInputType.text,
+    this.onValueChanged,
   });
 
   final String hintText;
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String errorText;
   final TextInputType kbType;
+  final VoidCallback? onValueChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,11 @@ class CustomTextField extends StatelessWidget {
                     borderSide: BorderSide.none,
                   ),
                 ),
+                onChanged: (value) {
+                  if(onValueChanged!=null){
+                    onValueChanged!();
+                  }
+                },
               ),
             ),
           ),
