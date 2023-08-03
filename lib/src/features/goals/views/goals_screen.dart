@@ -17,6 +17,7 @@ class GoalsScreen extends ConsumerStatefulWidget {
 
 class _GoalsScreenState extends ConsumerState<GoalsScreen> {
   late WalletUser user;
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -39,7 +40,9 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
         appBar: AppBar(
           actions: [
             IconButton(
-              onPressed: () {
+              onPressed: (
+
+                  ) {
                 showBarModalBottomSheet(
                   context: context,
                   builder: (context) => const AddGoalsScreen(),

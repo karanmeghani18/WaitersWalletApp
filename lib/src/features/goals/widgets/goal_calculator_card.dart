@@ -52,7 +52,7 @@ class _GoalCalculatorCardState extends State<GoalCalculatorCard> {
       width: MediaQuery.of(context).size.width * 0.9,
       margin: const EdgeInsets.symmetric(vertical: 30),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.7),
+
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(10),
@@ -60,7 +60,7 @@ class _GoalCalculatorCardState extends State<GoalCalculatorCard> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: yellowColorConst,
+
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(10),
@@ -124,7 +124,7 @@ class _GoalCalculatorCardState extends State<GoalCalculatorCard> {
           ),
           CalculatorTile(
             title: "Average Hourly",
-            amount: widget.averageHourly * termMultiplier,
+            amount: widget.takeHome / widget.hours,
           ),
         ],
       ),
@@ -159,7 +159,7 @@ class CalculatorTile extends StatelessWidget {
           Text(
             "\$$amount",
             style: const TextStyle(
-                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -183,8 +183,9 @@ class TermContainer extends StatelessWidget {
       height: 40,
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color: isSelected ? Colors.red : Colors.white,
+        color: isSelected ? skinColorConst : Colors.white,
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.black)
       ),
       child: Center(
         child: Text(

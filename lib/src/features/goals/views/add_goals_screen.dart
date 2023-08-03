@@ -27,6 +27,7 @@ class _GoalsScreenState extends ConsumerState<AddGoalsScreen> {
   Widget build(BuildContext context) {
     ref.listen(goalsControllerProvider, (previous, next) {
       if (next.status == GoalsStatus.addGoalsSuccess) {
+
         Navigator.of(context).pop();
       } else if (next.status == GoalsStatus.addGoalsFailure) {
         print("Adding goals failure");
@@ -71,7 +72,7 @@ class _GoalsScreenState extends ConsumerState<AddGoalsScreen> {
                     items: goalsType
                         .map((e) => DropdownMenuItem<String>(
                               value: e.name,
-                              child: Text(e.name),
+                              child: Text(e.name.toUpperCase()),
                             ))
                         .toList(),
                     onChanged: (selected) {

@@ -119,6 +119,17 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     }
   }
 
+  double? getHoursOfDay(DateTime dateTime) {
+    final hasTipsForDay = state.tips.indexWhere(
+      (e) => e.fullDateTime.withoutTime == dateTime.withoutTime,
+    );
+    if (hasTipsForDay == -1) {
+      return null;
+    } else {
+      return state.tips[hasTipsForDay].hoursWorked;
+    }
+  }
+
   void removeAllEvents() {
     state = state.copyWith(
       calendarEvents: [],
@@ -251,6 +262,8 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
         startOfWeek.subtract(Duration(days: subtract * 7)); // Subtract weeks
     startOfWeek = startOfWeek.add(Duration(days: add * 7)); // Add weeks
     DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
+    startOfWeek = startOfWeek.withoutTime;
+    endOfWeek = endOfWeek.withoutTime;
 
     List<double> tipAmounts = [];
 
@@ -275,6 +288,68 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
       tipAmounts.add(tipAmount);
     }
 
+    return tipAmounts;
+  }
+
+  double getWeekEarningsDataByDateTime(DateTime dateTime) {
+    DateTime startOfWeek =
+        dateTime.subtract(Duration(days: dateTime.weekday - 1));
+    startOfWeek = startOfWeek.withoutTime;
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+    double tipAmounts = 0.0;
+
+    for (DateTime date = startOfWeek;
+        date.isBefore(endOfWeek);
+        date = date.add(const Duration(days: 1))) {
+      List<double> dailyTipAmounts = [];
+
+      for (TipModel tip in state.tips) {
+        DateTime datetime = tip.fullDateTime;
+
+        if (datetime.year == date.year &&
+            datetime.month == date.month &&
+            datetime.day == date.day) {
+          dailyTipAmounts.add(tip.takeHome);
+        }
+      }
+
+      double tipAmount = dailyTipAmounts.isNotEmpty
+          ? dailyTipAmounts.reduce((a, b) => a + b)
+          : 0.0;
+      tipAmounts += tipAmount;
+    }
+    return tipAmounts;
+  }
+
+  double getWeekHours(DateTime dateTime) {
+    DateTime startOfWeek =
+    dateTime.subtract(Duration(days: dateTime.weekday - 1));
+    startOfWeek = startOfWeek.withoutTime;
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+    double tipAmounts = 0.0;
+
+    for (DateTime date = startOfWeek;
+    date.isBefore(endOfWeek);
+    date = date.add(const Duration(days: 1))) {
+      List<double> dailyTipAmounts = [];
+
+      for (TipModel tip in state.tips) {
+        DateTime datetime = tip.fullDateTime;
+
+        if (datetime.year == date.year &&
+            datetime.month == date.month &&
+            datetime.day == date.day) {
+          dailyTipAmounts.add(tip.hoursWorked);
+        }
+      }
+
+      double tipAmount = dailyTipAmounts.isNotEmpty
+          ? dailyTipAmounts.reduce((a, b) => a + b)
+          : 0.0;
+      tipAmounts += tipAmount;
+    }
     return tipAmounts;
   }
 
@@ -307,5 +382,54 @@ class CalendarEventController extends StateNotifier<CalendarEventState> {
     }
 
     return tipAmounts;
+  }
+
+  List<double> getMonthHours(DateTime targetDate) {
+    Map<String, List<double>> tipAmountsByMonth = {};
+
+    for (TipModel tip in state.tips) {
+      DateTime datetime = tip.fullDateTime;
+      double tipAmount = tip.hoursWorked;
+
+      String monthYear = '${datetime.year}-${datetime.month}';
+
+      if (tipAmountsByMonth.containsKey(monthYear)) {
+        tipAmountsByMonth[monthYear]!.add(tipAmount);
+      } else {
+        tipAmountsByMonth[monthYear] = [tipAmount];
+      }
+    }
+
+    List<double> tipAmounts = [];
+
+    DateTime currentDate = targetDate;
+    for (int i = 1; i <= 12; i++) {
+      String monthYear = '${currentDate.year}-$i';
+      List<double> monthTipAmounts = tipAmountsByMonth[monthYear] ?? [];
+      double totalTipAmount = monthTipAmounts.isNotEmpty
+          ? monthTipAmounts.reduce((a, b) => a + b)
+          : 0.0;
+      tipAmounts.add(totalTipAmount);
+    }
+
+    return tipAmounts;
+  }
+
+  double getYearEarningsData(DateTime targetDate) {
+    List<double> monthEarningsData = getMonthEarningsData(targetDate);
+
+    double totalYearEarnings = monthEarningsData.fold(
+        0.0, (previousValue, earnings) => previousValue + earnings);
+
+    return double.parse(totalYearEarnings.toStringAsFixed(2));
+  }
+
+  double getYearHoursData(DateTime targetDate) {
+    List<double> monthHours = getMonthHours(targetDate);
+
+    double totalYearEarnings = monthHours.fold(
+        0.0, (previousValue, earnings) => previousValue + earnings);
+
+    return double.parse(totalYearEarnings.toStringAsFixed(2));
   }
 }

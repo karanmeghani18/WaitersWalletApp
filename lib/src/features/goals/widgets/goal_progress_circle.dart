@@ -29,6 +29,7 @@ class _GoalsProgressCircleState extends State<GoalsProgressCircle> {
         widget.value >= widget.goal ? 100 : (widget.value / widget.goal) * 100,
       ),
       animationDuration: 2,
+      key: UniqueKey(),
       backStrokeWidth: 10,
       progressStrokeWidth: 12,
       onGetText: (double value) {

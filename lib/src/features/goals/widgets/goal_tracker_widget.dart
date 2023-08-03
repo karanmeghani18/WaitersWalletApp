@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/goals/controller/goals_controller.dart';
 import 'package:waiters_wallet/src/features/goals/models/goals_model.dart';
 import 'package:waiters_wallet/src/features/goals/widgets/daily_date_selector.dart';
@@ -37,7 +38,7 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     });
   }
 
-  double getTakeHomeData() {
+  double getTakeHomeGoals() {
     final takeHomeGoal = ref.read(goalsControllerProvider).goals!.takeHomeGoal;
     final goalType = ref.read(goalsControllerProvider).goals!.goalType;
     switch (widget.tabIndex) {
@@ -62,7 +63,7 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     }
   }
 
-  double getHoursData() {
+  double getHoursGoals() {
     final hoursGoal = ref.read(goalsControllerProvider).goals!.hoursGoal;
     final goalType = ref.read(goalsControllerProvider).goals!.goalType;
     switch (widget.tabIndex) {
@@ -85,7 +86,60 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     }
   }
 
+  double getTakeHomeData() {
+    switch (widget.tabIndex) {
+      case 0:
+        double result = ref
+                .read(calendarEventControllerProvider.notifier)
+                .getEarningsOfDay(selectedDate)
+                ?.takeHome ??
+            0.0;
+        return double.parse(result.toStringAsFixed(2));
+      case 1:
+        double result = ref
+            .read(calendarEventControllerProvider.notifier)
+            .getWeekEarningsDataByDateTime(selectedDate);
+        return result;
+      case 2:
+        List<double> result = ref
+            .read(calendarEventControllerProvider.notifier)
+            .getMonthEarningsData(selectedDate);
+        return double.parse(result[selectedDate.month - 1].toStringAsFixed(2));
+      case 3:
+        return ref
+            .read(calendarEventControllerProvider.notifier)
+            .getYearEarningsData(selectedDate);
+      default:
+        return 0.0;
+    }
+  }
 
+  double getHoursData() {
+    switch (widget.tabIndex) {
+      case 0:
+        double result = ref
+                .read(calendarEventControllerProvider.notifier)
+                .getHoursOfDay(selectedDate) ??
+            0.0;
+        return double.parse(result.toStringAsFixed(2));
+      case 1:
+        double result = ref
+            .read(calendarEventControllerProvider.notifier)
+            .getWeekHours(selectedDate);
+        return double.parse(result.toStringAsFixed(2));
+      case 2:
+        List<double> result = ref
+            .read(calendarEventControllerProvider.notifier)
+            .getMonthHours(selectedDate);
+        return double.parse(result[selectedDate.month - 1].toStringAsFixed(2));
+      case 3:
+        return ref
+            .read(calendarEventControllerProvider.notifier)
+            .getYearHoursData(selectedDate);
+      default:
+        return 0.0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,19 +180,22 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
                   ),
                 GoalCard(
                   title: "Take Home",
-                  goal: getTakeHomeData(),
-                  value: 0.0,
+                  goal: getTakeHomeGoals(),
+                  value: getTakeHomeData(),
                 ),
                 GoalCard(
                   title: "Hours",
-                  goal: getHoursData(),
-                  value: 0.0,
+                  goal: getHoursGoals(),
+                  value: getHoursData(),
                 ),
                 GoalCard(
                   title: "Average Hourly",
-                  goal: double.parse(
-                      (getTakeHomeData() / getHoursData()).toStringAsFixed(2)),
-                  value: 0.0,
+                  goal: double.parse((getTakeHomeGoals() / getHoursGoals())
+                      .toStringAsFixed(2)),
+                  value: (getTakeHomeData() / getHoursData()).isFinite
+                      ? double.parse((getTakeHomeData() / getHoursData())
+                          .toStringAsFixed(2))
+                      : 0.0,
                 ),
               ],
             ),
