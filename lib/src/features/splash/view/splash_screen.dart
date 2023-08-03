@@ -3,12 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/authentication/repository/auth_repo.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/goals/controller/goals_controller.dart';
 import 'package:waiters_wallet/src/features/restaurants/addrestaurant/repository/addrestaurant_repo.dart';
 import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
 
+import '../../../constants/string_const.dart';
 import '../../../routing/routing.dart';
 import '../../addtip/models/restaurant_model.dart';
 
@@ -20,6 +23,36 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  Future<void> performAppInitialization(
+      BuildContext context, bool isLoggedIn, bool hasEnabledBiometric) async {
+    if (isLoggedIn) {
+      if (hasEnabledBiometric) {
+        final authenticate = await ref
+            .read(authControllerProvider.notifier)
+            .authenticateWithBiometrics();
+        if (!authenticate) return;
+      }
+
+      final currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
+      await ref.read(authRepoProvider).fetchUser(currentUserEmail);
+      await ref
+          .read(calendarEventControllerProvider.notifier)
+          .fetchTipsFromServer();
+      await ref
+          .read(scheduleControllerProvider.notifier)
+          .fetchScheduleFromServer();
+
+      final restaurantList =
+          await ref.read(addRestaurantRepoProvider).fetchRestaurant();
+      for (RestaurantModel element in restaurantList) {
+        ref.read(authRepoProvider).addRestaurant(element);
+      }
+      Navigator.pushReplacementNamed(context, Routing.homeScreen);
+    } else {
+      Navigator.pushReplacementNamed(context, Routing.onBoardingScreen);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,33 +60,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     Future.delayed(
       const Duration(seconds: 1),
       () async {
-        final currentUser = FirebaseAuth.instance.currentUser;
-        if (currentUser != null) {
-          await ref.read(authRepoProvider).fetchUser(currentUser.email!);
-          await ref
-              .read(calendarEventControllerProvider.notifier)
-              .fetchTipsFromServer();
-          await ref
-              .read(scheduleControllerProvider.notifier)
-              .fetchScheduleFromServer();
-          await ref
-              .read(addRestaurantRepoProvider)
-              .fetchRestaurant()
-              .then((value) {
-            for (RestaurantModel element in value) {
-              ref.read(authRepoProvider).addRestaurant(element);
-            }
-          });
-          Navigator.pushReplacementNamed(
-            context,
-            Routing.homeScreen,
-          );
-        } else {
-          Navigator.pushReplacementNamed(
-            context,
-            Routing.onBoardingScreen,
-          );
-        }
+        // Obtain shared preferences.
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final bool isLoggedIn = prefs.getBool(isLoginKey) ?? false;
+        final bool hasEnabledBiometric = prefs.getBool(isLoginKey) ?? false;
+        await performAppInitialization(
+            context, isLoggedIn, hasEnabledBiometric);
       },
     );
   }

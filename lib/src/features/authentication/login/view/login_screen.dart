@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waiters_wallet/src/constants/color_constants.dart';
+import 'package:waiters_wallet/src/constants/string_const.dart';
 import 'package:waiters_wallet/src/features/authentication/controller/auth_controller.dart';
 import 'package:waiters_wallet/src/features/calendar/controller/calendar_event_controller.dart';
 import 'package:waiters_wallet/src/features/home/views/home_screen.dart';
@@ -53,12 +55,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     ref.listen(authControllerProvider, (previous, next) async {
       if (next.status == AuthStatus.loginUserSuccess) {
+        // Obtain shared preferences.
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool(isLoginKey, true);
+
         ref
             .read(calendarEventControllerProvider.notifier)
             .fetchTipsFromServer();
-        ref
-            .read(scheduleControllerProvider.notifier)
-            .fetchScheduleFromServer();
+        ref.read(scheduleControllerProvider.notifier).fetchScheduleFromServer();
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) {
           return const HomeScreen();
@@ -80,7 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     ref.listen(calendarEventControllerProvider, (previous, next) {});
-    ref.listen(scheduleControllerProvider, (previous, next) { });
+    ref.listen(scheduleControllerProvider, (previous, next) {});
     return Scaffold(
       body: LoadingOverlay(
         isLoading:

@@ -1,11 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_auth/local_auth.dart';
 
 import '../../addtip/models/restaurant_model.dart';
 import '../../restaurants/addrestaurant/repository/addrestaurant_repo.dart';
 import '../models/wallet_user.dart';
 import '../repository/auth_repo.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
 
 part 'auth_state.dart';
 
@@ -26,6 +30,33 @@ class AuthController extends StateNotifier<AuthState> {
         super(const AuthState());
   final AuthenticationRepository _repository;
   final RestaurantRepository _restaurantRepository;
+
+  static final _auth = LocalAuthentication();
+
+  static Future<bool> _canAuthenticate() async =>
+      await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
+
+  Future<bool> authenticateWithBiometrics() async {
+    try {
+      if (!await _canAuthenticate()) return false;
+      return await _auth.authenticate(
+          localizedReason: "Use Biometrics to authenticate",
+          authMessages: [
+            const AndroidAuthMessages(
+              signInTitle: "Sign In",
+              cancelButton: "No Thanks",
+            ),
+            const IOSAuthMessages(cancelButton: "No Thanks"),
+          ],
+          options: const AuthenticationOptions(
+            useErrorDialogs: true,
+            stickyAuth: true,
+          ));
+    } catch (e) {
+      debugPrint("error $e");
+      return false;
+    }
+  }
 
   Future signUp({
     required String fullName,

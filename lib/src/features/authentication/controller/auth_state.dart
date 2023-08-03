@@ -20,7 +20,6 @@ class AuthState extends Equatable{
   const AuthState({
     this.status = AuthStatus.initial,
     this.errorText = "",
-
   });
 
   final AuthStatus status;
