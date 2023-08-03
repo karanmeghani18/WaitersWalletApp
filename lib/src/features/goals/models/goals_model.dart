@@ -24,10 +24,10 @@ class GoalsModel {
 
   static GoalsModel fromJson(Map<String, dynamic> json) {
     return GoalsModel(
-      averageHourlyGoal: json['averageHourlyGoal'],
-      hoursGoal: json['hoursGoal'],
-      takeHomeGoal: json['takeHomeGoal'],
-      goalType: GoalType.values[json['goalType']],
+      averageHourlyGoal: json['averageHourlyGoal'] ?? 0.0,
+      hoursGoal: json['hoursGoal'] ?? 0.0,
+      takeHomeGoal: json['takeHomeGoal'] ?? 0.0,
+      goalType: GoalType.values[json['goalType'] ?? 0],
     );
   }
 }

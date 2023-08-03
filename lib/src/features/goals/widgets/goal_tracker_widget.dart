@@ -147,7 +147,7 @@ class _GoalTrackerState extends ConsumerState<GoalTracker> {
     final endDate = getFormattedDate(getWeekEndDate(selectedDate));
     final weekHeaderString = "$startDate - $endDate";
     final goals = ref.watch(goalsControllerProvider).goals;
-    final goalsAvailable = goals != null;
+    final goalsAvailable = goals?.takeHomeGoal != 0;
 
     return goalsAvailable
         ? SingleChildScrollView(

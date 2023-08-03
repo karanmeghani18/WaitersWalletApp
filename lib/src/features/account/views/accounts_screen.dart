@@ -51,8 +51,6 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
             Fluttertoast.showToast(msg: errorText);
           }),
           const SizedBox(height: 12),
-          CustomAuthButton(text: "Edit Profile", onPress: () {}),
-          const SizedBox(height: 12),
           CustomAuthButton(
               text: "Manage Restaurants",
               onPress: () {
