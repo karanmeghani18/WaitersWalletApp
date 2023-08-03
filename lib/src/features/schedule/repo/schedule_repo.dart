@@ -32,4 +32,13 @@ class ScheduleRepo {
     }
     return schedules;
   }
+
+  Future deleteSchedule(ScheduleModel schedule) async{
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    await _users
+        .doc(currentUser!.email)
+        .collection("schedule")
+        .doc(schedule.id)
+        .delete();
+  }
 }

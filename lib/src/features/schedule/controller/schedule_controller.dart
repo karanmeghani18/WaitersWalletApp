@@ -56,6 +56,10 @@ class ScheduleController extends StateNotifier<ScheduleState> {
     }
   }
 
+  Future deleteSchedule(ScheduleModel scheduleModel) async {
+    await _repository.deleteSchedule(scheduleModel);
+  }
+
   Future<void> fetchScheduleFromServer() async {
     state = state.copyWith(status: ScheduleStatus.fetchingSchedule);
     try {

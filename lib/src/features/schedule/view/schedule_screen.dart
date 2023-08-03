@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:waiters_wallet/src/api/notifications_api.dart';
 import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
 import 'package:waiters_wallet/src/features/schedule/models/schedule_model.dart';
 import 'package:waiters_wallet/src/widgets/week_dates_selector.dart';
@@ -17,8 +18,6 @@ class ScheduleScreen extends ConsumerStatefulWidget {
 }
 
 class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
-
-
   DateTime today = DateTime.now();
 
   @override
@@ -26,6 +25,20 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     final startDate = getFormattedDate(getWeekStartDate(today));
     final endDate = getFormattedDate(getWeekEndDate(today));
     final weekHeaderString = "$startDate - $endDate";
+
+    ref.listen(scheduleControllerProvider, (previous, next) {
+      if (next.status == ScheduleStatus.addScheduleSuccess) {
+        final scheduleAdded = next.schedule.last;
+        NotificationsApi.showScheduleNotification(
+          title: "Get Ready For Shift",
+          body:
+              "Shift Starts from ${scheduleAdded.startOfShift.hour}:${scheduleAdded.startOfShift.minute}",
+          dateTime: scheduleAdded.startOfShift.subtract(
+            const Duration(minutes: 30),
+          ),
+        );
+      }
+    });
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
