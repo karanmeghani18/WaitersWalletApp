@@ -13,10 +13,14 @@ import '../../addtip/models/restaurant_model.dart';
 import '../../restaurants/addrestaurant/controller/addrestaurant_controller.dart';
 
 class AddScheduleScreen extends ConsumerStatefulWidget {
-  const AddScheduleScreen({Key? key, required this.selectedDate})
-      : super(key: key);
+  const AddScheduleScreen({
+    Key? key,
+    required this.selectedDate,
+    this.scheduleModel,
+  }) : super(key: key);
 
   final DateTime selectedDate;
+  final ScheduleModel? scheduleModel;
 
   @override
   ConsumerState<AddScheduleScreen> createState() => _AddScheduleScreenState();
@@ -29,6 +33,15 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   List<RestaurantModel> restaurants = [];
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.scheduleModel != null) {
+      startOfShift = widget.scheduleModel!.startOfShift;
+      endOfShift = widget.scheduleModel!.endOfShift;
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     restaurants =
@@ -36,6 +49,12 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
     selectedItem = restaurants.isEmpty ? "" : restaurants.first.restaurantName;
     startOfShift = widget.selectedDate;
     endOfShift = widget.selectedDate;
+    if (widget.scheduleModel != null) {
+      selectedItem = restaurants
+          .firstWhere(
+              (element) => element.id == widget.scheduleModel!.restaurantId)
+          .restaurantName;
+    }
   }
 
   void showCustomTimePicker(bool isStartTime) {
@@ -96,9 +115,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "Add Shift\n${getScheduleFormattedDate(widget.selectedDate)}",
+              "${widget.scheduleModel != null ? "Edit" : "Add"} Shift\n${getScheduleFormattedDate(widget.selectedDate)}",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -165,7 +184,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                   ),
             const Spacer(),
             CustomAuthButton(
-              text: "Add Schedule",
+              text: widget.scheduleModel != null ? "SAVE" : "ADD",
               onPress: () async {
                 final restaurantSelected = restaurants.firstWhere(
                   (element) => element.restaurantName == selectedItem,

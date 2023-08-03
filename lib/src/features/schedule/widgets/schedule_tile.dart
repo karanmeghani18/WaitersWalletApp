@@ -69,14 +69,19 @@ class ScheduleTile extends StatelessWidget {
                 final shiftString =
                     "${schedule.restaurantName} - $startTimeString to $endTimeString";
                 return GestureDetector(
-                   onTap: () {
-                     print(schedule.restaurantName);
-                   },
+                  onTap: () {
+                    showBarModalBottomSheet(
+                      context: context,
+                      builder: (context) => AddScheduleScreen(
+                        selectedDate: currentDate,
+                        scheduleModel: schedule,
+                      ),
+                    );
+                  },
                   child: Container(
                     width: double.maxFinite,
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(6),
                     ),
                     padding: const EdgeInsets.all(4),
                     child: Column(

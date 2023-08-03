@@ -27,13 +27,11 @@ class ScheduleController extends StateNotifier<ScheduleState> {
   Future<void> addSchedule(ScheduleModel scheduleModel) async {
     try {
       state = state.copyWith(status: ScheduleStatus.addingSchedule);
-      print(scheduleModel.startOfShift);
-      if (state.schedule.where((element) {
-            print(
-                "${element.startOfShift.withoutTime} - ${scheduleModel.startOfShift.withoutTime}");
-            return element.startOfShift.withoutTime ==
-                scheduleModel.startOfShift.withoutTime;
-          }).length !=
+      if (state.schedule
+              .where((element) =>
+                  element.startOfShift.withoutTime ==
+                  scheduleModel.startOfShift.withoutTime)
+              .length !=
           3) {
         await _repository.addScheduleToFirebase(scheduleModel);
         state = state.copyWith(
