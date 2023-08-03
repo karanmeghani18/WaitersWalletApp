@@ -1,3 +1,3 @@
-# Waiter's Waller
+# Waiter's Wallet
 
-A Flutter project for Waiter's Waller Mobile App!
+A Flutter project for Waiter's Wallet Mobile App!
