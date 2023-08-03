@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:waiters_wallet/src/constants/constants.dart';
 import 'package:waiters_wallet/src/features/schedule/controller/schedule_controller.dart';
 import 'package:waiters_wallet/src/features/schedule/models/schedule_model.dart';
+import 'package:waiters_wallet/src/widgets/custom_auth_button.dart';
 
 import '../../../constants/color_constants.dart';
 import '../../addtip/models/restaurant_model.dart';
@@ -76,7 +78,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
             content: Text(next.message),
             actions: [
               GestureDetector(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -88,82 +90,107 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
       }
     });
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-              "Add Shift For: ${getScheduleFormattedDate(widget.selectedDate)}"),
-          Text("Shift Start Time"),
-          ElevatedButton(
-            onPressed: () {
-              showCustomTimePicker(true);
-            },
-            child: Text('Select Time'),
-          ),
-          Text("Shift End Time"),
-          ElevatedButton(
-            onPressed: () {
-              showCustomTimePicker(false);
-            },
-            child: Text('Select Time'),
-          ),
-          restaurants.isEmpty
-              ? const SizedBox()
-              : Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: DropdownButtonFormField<String>(
-                      padding: EdgeInsets.zero,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            width: 3,
-                            color: skinColorConst,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Add Shift\n${getScheduleFormattedDate(widget.selectedDate)}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text("Shift Start Time"),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    showCustomTimePicker(true);
+                  },
+                  style: elevatedButtonStyle,
+                  child: const Text('Select Time'),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Text("Shift End Time"),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    showCustomTimePicker(false);
+                  },
+                  style: elevatedButtonStyle,
+                  child: const Text('Select Time'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            restaurants.isEmpty
+                ? const SizedBox()
+                : Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: DropdownButtonFormField<String>(
+                        padding: EdgeInsets.zero,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: skinColorConst,
+                            ),
                           ),
                         ),
+                        value: selectedItem,
+                        items: restaurants
+                            .map((e) => DropdownMenuItem<String>(
+                                  value: e.restaurantName,
+                                  child: Text(e.restaurantName),
+                                ))
+                            .toList(),
+                        onChanged: (selected) => setState(() {
+                          selectedItem = selected;
+                        }),
                       ),
-                      value: selectedItem,
-                      items: restaurants
-                          .map((e) => DropdownMenuItem<String>(
-                                value: e.restaurantName,
-                                child: Text(e.restaurantName),
-                              ))
-                          .toList(),
-                      onChanged: (selected) => setState(() {
-                        selectedItem = selected;
-                      }),
                     ),
                   ),
-                ),
-          ElevatedButton(
-            onPressed: () async {
-              final restaurantSelected = restaurants.firstWhere(
-                (element) => element.restaurantName == selectedItem,
-              );
-              final scheduleModel = ScheduleModel(
-                id: const Uuid().v4(),
-                startOfShift: startOfShift,
-                endOfShift: endOfShift,
-                restaurantId: restaurantSelected.id,
-                restaurantName: restaurantSelected.restaurantName,
-              );
-              await ref
-                  .read(scheduleControllerProvider.notifier)
-                  .addSchedule(scheduleModel);
-            },
-            child: Text('Add Schedule'),
-          ),
-        ],
+            const Spacer(),
+            CustomAuthButton(
+              text: "Add Schedule",
+              onPress: () async {
+                final restaurantSelected = restaurants.firstWhere(
+                  (element) => element.restaurantName == selectedItem,
+                );
+                final scheduleModel = ScheduleModel(
+                  id: const Uuid().v4(),
+                  startOfShift: startOfShift,
+                  endOfShift: endOfShift,
+                  restaurantId: restaurantSelected.id,
+                  restaurantName: restaurantSelected.restaurantName,
+                );
+                await ref
+                    .read(scheduleControllerProvider.notifier)
+                    .addSchedule(scheduleModel);
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
 
   String getScheduleFormattedDate(DateTime date) {
-    DateFormat formatter = DateFormat('EEEE, MMMM d');
+    DateFormat formatter = DateFormat('EEEE MMMM d, y');
     return formatter.format(date);
   }
 }
