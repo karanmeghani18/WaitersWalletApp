@@ -21,11 +21,18 @@ class AccountsScreen extends ConsumerStatefulWidget {
 class _AccountsScreenState extends ConsumerState<AccountsScreen> {
   bool faceIdEnabled = false;
 
-  @override
-  void initState() async{
-    super.initState();
+  Future initialiseFaceId() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    faceIdEnabled = prefs.getBool(isBiometricEnabled) ?? false;
+    setState(() {
+      faceIdEnabled = prefs.getBool(isBiometricEnabled) ?? false;
+    });
+
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    initialiseFaceId();
   }
 
   void logoutUser() async {
@@ -85,10 +92,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
               Switch.adaptive(
                 value: faceIdEnabled,
                 onChanged: (isEnabled) async {
-                  if (isEnabled) {
+                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                  setState(() {
                     faceIdEnabled = isEnabled;
-                    final SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setBool(isBiometricEnabled, isEnabled);
+                  });
+                  prefs.setBool(isBiometricEnabled, isEnabled);
+                  if (isEnabled) {
                     await ref
                         .read(authControllerProvider.notifier)
                         .authenticateWithBiometrics();
